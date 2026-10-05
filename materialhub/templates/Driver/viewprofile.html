@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Driver Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body }
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .profile-container }
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-card }
+            background: rgba(30, 30, 40, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-card:hover }
+            transform: translateY(-5px);
+        }
+
+        .profile-header }
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar }
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+            background: #fff;
+        }
+
+        .driver-name }
+            color: white;
+            margin-top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .driver-badge }
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .profile-body }
+            padding: 30px;
+        }
+
+        .info-section }
+            margin-bottom: 30px;
+        }
+
+        .info-title }
+            color: #667eea;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+
+        .info-grid }
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item }
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover }
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .info-label }
+            color: #aaa;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-value }
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .proof-section }
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .proof-title }
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .proof-link }
+            color: #4CAF50;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .proof-link:hover }
+            color: #45a049;
+            transform: translateX(5px);
+        }
+
+        .btn-edit }
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-edit:hover }
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-back }
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 30px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-back:hover }
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-buttons }
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) }
+            .profile-container }
+                padding: 15px;
+            }
+
+            .profile-header }
+                padding: 30px;
+            }
+
+            .profile-avatar }
+                width: 120px;
+                height: 120px;
+            }
+
+            .driver-name }
+                font-size: 24px;
+            }
+
+            .info-grid }
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons }
+                flex-direction: column;
+            }
+
+            .btn-edit, .btn-back }
+                justify-content: center;
+            }
+        }
+
+        @keyframes fadeIn }
+            from }
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to }
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card }
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-card">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <img src="{{ data.photo }}" alt="{{ data.name }}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/150?text=Driver'">
+                <h1 class="driver-name">{{ data.name }}</h1>
+                <div class="driver-badge">
+                    <i class="fas fa-id-card"></i> Driver Profile
+                </div>
+            </div>
+
+            <!-- Profile Body -->
+            <div class="profile-body">
+                <div class="info-section">
+                    <div class="info-title">
+                        <i class="fas fa-user-circle"></i> Personal Information
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </div>
+                            <div class="info-value">{{ data.email }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-phone"></i> Phone Number
+                            </div>
+                            <div class="info-value">{{ data.number }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-title">
+                        <i class="fas fa-map-marker-alt"></i> Address Information
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-location-dot"></i> Place
+                            </div>
+                            <div class="info-value">{{ data.place }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-mail-bulk"></i> Post Office
+                            </div>
+                            <div class="info-value">{{ data.post }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-map-pin"></i> PIN Code
+                            </div>
+                            <div class="info-value">{{ data.pin }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-title">
+                        <i class="fas fa-file-alt"></i> Verification Documents
+                    </div>
+                    <div class="proof-section">
+                        <div class="proof-title">
+                            <i class="fas fa-id-card"></i> Driver's Proof Document
+                        </div>
+                        <a href="{{ data.proof }}" target="_blank" class="proof-link">
+                            <i class="fas fa-eye"></i> View Document
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <div class="info-value mt-2" style="font-size: 12px; color: #aaa;">
+                            <i class="fas fa-shield-alt"></i> Document verified and secured
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="/myapp/editprofile_get/{{ data.id }}" class="btn-edit">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                    <a href="/myapp/dashboard/" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Driver Profile</title>
+    <!-- Google Fonts + Material Icons + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* subtle overlay */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+        }
+
+        /* main card */
+        .material-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .hub-header {
+            background: #1e2b3c;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 70px;
+            height: 70px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .hub-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        /* profile body */
+        .profile-body {
+            padding: 2rem;
+        }
+
+        /* avatar section */
+        .avatar-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff8c42;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: #f8fafd;
+        }
+
+        /* info grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: #f8fafd;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            transition: all 0.2s;
+            border: 1px solid #e9ecef;
+        }
+
+        .info-card:hover {
+            background: #fffaf5;
+            border-color: #ff8c42;
+            transform: translateX(4px);
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8e9aaf;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-label i {
+            color: #ff8c42;
+            font-size: 0.8rem;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        /* document section */
+        .doc-section {
+            background: linear-gradient(135deg, #fef9f0, #fff4e8);
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ff8c42;
+        }
+
+        .doc-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #c26b2c;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e2b3c;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .doc-link i {
+            font-size: 0.8rem;
+        }
+
+        .doc-link:hover {
+            background: #2c3e4e;
+            transform: translateX(3px);
+            color: white;
+        }
+
+        /* action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.75rem 1.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-material i {
+            font-size: 0.9rem;
+        }
+
+        .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+            color: white;
+        }
+
+        .btn-outline-material {
+            background: transparent;
+            border: 1.5px solid #1e2b3c;
+            color: #1e2b3c;
+            padding: 0.73rem 1.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-outline-material:hover {
+            background: #1e2b3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .profile-body {
+                padding: 1.5rem;
+            }
+            .profile-avatar {
+                width: 110px;
+                height: 110px;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .btn-material, .btn-outline-material {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="material-card">
+    <!-- Header -->
+    <div class="hub-header">
+        <div class="logo-icon">
+            <i class="fas fa-truck"></i>
+        </div>
+        <h1>Driver Profile</h1>
+        <p>Manage your personal information • Material Hub</p>
+    </div>
+
+    <!-- Profile Body -->
+    <div class="profile-body">
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+            {% if data.photo and data.photo != '' %}
+                <img src="{{ data.photo }}" alt="{{ data.name }}" class="profile-avatar">
+            {% else %}
+                <img src="https://via.placeholder.com/140x140?text=Driver" alt="Driver" class="profile-avatar">
+            {% endif %}
+        </div>
+
+        <!-- Personal Information -->
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-user"></i> Full Name</div>
+                <div class="info-value">{{ data.name|default:"Not specified" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-envelope"></i> Email Address</div>
+                <div class="info-value">{{ data.email|default:"Not specified" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-phone-alt"></i> Phone Number</div>
+                <div class="info-value">{{ data.number|default:"Not specified" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-map-marker-alt"></i> Place</div>
+                <div class="info-value">{{ data.place|default:"Not specified" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-mail-bulk"></i> Post Office</div>
+                <div class="info-value">{{ data.post|default:"Not specified" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label"><i class="fas fa-map-pin"></i> PIN Code</div>
+                <div class="info-value">{{ data.pin|default:"Not specified" }}</div>
+            </div>
+        </div>
+
+        <!-- Verification Documents -->
+        <div class="doc-section">
+            <div class="doc-title">
+                <i class="fas fa-file-alt"></i> Verification Documents
+            </div>
+            {% if data.proof and data.proof != '' %}
+                <a href="{{ data.proof }}" target="_blank" class="doc-link">
+                    <i class="fas fa-eye"></i> View Driver's Proof Document
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                <div class="info-value mt-2" style="font-size: 0.7rem; color:#6c7a91;">
+                    <i class="fas fa-shield-alt"></i> Document verified and secured
+                </div>
+            {% else %}
+                <div class="info-value" style="color:#94a3b8;">
+                    <i class="fas fa-file"></i> No document uploaded yet
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/myapp/driverhome_get/{{ data.id }}" class="btn-material">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+            <a href="/myapp/driverhome_get/#a" class="btn-outline-material">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

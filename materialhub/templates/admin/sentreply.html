@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Complaint</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h4 class="mb-4">Send a Complaint</h4>
+    <form method="post" action="/myapp/sentreply_post/">
+        {% csrf_token %}
+                <input type="hidden" name="id" value="{{ data.id }}">
+
+
+
+      <!-- Complaint Text -->
+      <div class="mb-3">
+        <label for="reply" class="form-label">Reply</label>
+        <textarea class="form-control" id="reply" rows="4" placeholder="Write your here..." required></textarea>
+      </div>
+
+      <!-- Optional File Upload -->
+      <div class="mb-3">
+        <label for="photo" class="form-label">Attach Photo (optional)</label>
+        <input type="file" class="form-control" id="photo" accept="image/*">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Send Complaint</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+{% extends 'admin/adminhome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Send Reply</title>
+    <!-- Google Fonts + Material Icons + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Bootstrap 5 CSS (lightweight, but we'll scope styles) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ----- ISOLATED STYLES: all rules prefixed with .send-reply-container to avoid conflicts with parent adminhome.css ----- */
+        .send-reply-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .send-reply-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            min-height: auto;
+            padding: 1rem;
+            position: relative;
+            width: 100%;
+        }
+
+        /* main card */
+        .send-reply-container .material-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .send-reply-container .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .send-reply-container .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .send-reply-container .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .send-reply-container .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .send-reply-container .logo-icon i {
+            font-size: 2rem;
+        }
+
+        .send-reply-container .hub-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .send-reply-container .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* form body */
+        .send-reply-container .form-body {
+            padding: 2rem 2rem 2rem;
+        }
+
+        /* form groups */
+        .send-reply-container .input-group-material {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .send-reply-container .input-group-material .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 0.85rem;
+            color: #8e9aaf;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .send-reply-container .form-control-material {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .send-reply-container textarea.form-control-material {
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .send-reply-container .form-control-material:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+            background-color: #ffffff;
+        }
+
+        .send-reply-container .form-control-material::placeholder {
+            color: #a0b3c9;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        /* floating label */
+        .send-reply-container .label-badge {
+            position: absolute;
+            left: 2.8rem;
+            top: -0.6rem;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff8c42;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* file upload */
+        .send-reply-container .file-upload-wrapper {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .send-reply-container .file-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafd;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 1.2rem;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .send-reply-container .file-label:hover {
+            border-color: #ff8c42;
+            background: #fffaf5;
+        }
+
+        .send-reply-container .file-label i {
+            font-size: 1.3rem;
+            color: #ff8c42;
+        }
+
+        .send-reply-container .file-label span {
+            font-size: 0.85rem;
+        }
+
+        .send-reply-container .file-input-hidden {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .send-reply-container .file-name {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #eef2ff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+        }
+
+        /* feedback preview card */
+        .send-reply-container .feedback-preview {
+            background: #fef9f0;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ff8c42;
+        }
+
+        .send-reply-container .feedback-preview .preview-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #c26b2c;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .send-reply-container .feedback-preview .preview-text {
+            font-size: 0.85rem;
+            color: #1e2b3c;
+            line-height: 1.4;
+        }
+
+        .send-reply-container .feedback-preview .preview-user {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .send-reply-container .badge-feedback {
+            background: #eef2ff;
+            color: #475569;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        /* submit button */
+        .send-reply-container .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-reply-container .btn-material i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .send-reply-container .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+        }
+
+        .send-reply-container .btn-material:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .send-reply-container .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .send-reply-container .back-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* alert */
+        .send-reply-container .alert-material {
+            border-radius: 1rem;
+            border: none;
+            font-size: 0.85rem;
+            background: #fff4e8;
+            color: #c26b2c;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1.5rem;
+            display: none;
+            padding: 0.75rem 1rem;
+        }
+
+        .send-reply-container .alert-success-material {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left-color: #4caf50;
+        }
+
+        /* character counter */
+        .send-reply-container .char-counter {
+            font-size: 0.7rem;
+            color: #8e9aaf;
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        /* ripple animation */
+        @keyframes reply-ripple-animation {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        .send-reply-container .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255,255,240,0.5);
+            transform: scale(0);
+            animation: reply-ripple-animation 0.5s linear forwards;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .send-reply-container .form-body {
+                padding: 1.5rem;
+            }
+            .send-reply-container .hub-header {
+                padding: 1.2rem;
+            }
+            .send-reply-container .logo-icon {
+                width: 52px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Isolated wrapper: all styles are scoped under .send-reply-container -->
+<div class="send-reply-container">
+    <div class="material-card">
+        <!-- Header -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-reply-all"></i>
+            </div>
+            <h1>Send Reply</h1>
+            <p>Respond to customer feedback • Material Hub</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <!-- alert placeholder -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <!-- Feedback Preview Section -->
+            <div class="feedback-preview" id="feedbackPreview">
+                <div class="preview-label">
+                    <i class="fas fa-comment"></i> REPLIED TO FEEDBACK
+                </div>
+                <div class="preview-text" id="previewFeedbackText">
+                    {{ data.feedback|default:"Excellent material quality and fast delivery. Highly recommended!" }}
+                </div>
+                <div class="preview-user">
+                    <i class="fas fa-user-circle"></i> <span id="previewUserName">{{ data.user_name|default:"John Mathew" }}</span>
+                    <span class="badge-feedback">
+                        <i class="far fa-clock"></i> Received: {{ data.date|default:"2024-01-15" }}
+                    </span>
+                </div>
+            </div>
+
+            <form method="post" action="/myapp/sentreply_post/" enctype="multipart/form-data" id="replyForm">
+                {% csrf_token %}
+
+                <!-- Hidden ID field -->
+                <input type="hidden" name="id" value="{{ data.id }}" id="feedbackId">
+
+                <!-- Reply Text Area -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">chat</i></span>
+                    <textarea class="form-control-material" id="replyText" name="reply" rows="5" placeholder=" " required></textarea>
+                    <span class="label-badge">Your Reply</span>
+                </div>
+
+                <!-- Character counter -->
+                <div class="char-counter">
+                    <span id="charCount">0</span> characters
+                </div>
+
+                <!-- File Upload (Optional) -->
+                <div class="file-upload-wrapper">
+                    <label for="photoUpload" class="file-label" id="photoLabel">
+                        <i class="fas fa-paperclip"></i>
+                        <span>Attach File (Optional)</span>
+                        <span class="file-name" id="photoFileName">No file chosen</span>
+                    </label>
+                    <input type="file" id="photoUpload" class="file-input-hidden" name="photo" accept="image/*,application/pdf">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Send Reply</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <!-- back link -->
+            <div class="text-center">
+                <a href="/myapp/view_user_request_get/" class="back-link" id="backToFeedbacks">
+                    <i class="fas fa-arrow-left"></i> Back to Feedback List
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#6c7a91;">Your response will be sent to the customer via email/notification</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: isolated logic using container scoping -->
+<script>
+    (function() {
+        // Scope everything to our container
+        const container = document.querySelector('.send-reply-container');
+        if (!container) return;
+
+        // Helper selectors within container
+        const photoInput = container.querySelector('#photoUpload');
+        const photoFileNameSpan = container.querySelector('#photoFileName');
+        const replyTextarea = container.querySelector('#replyText');
+        const charCountSpan = container.querySelector('#charCount');
+        const form = container.querySelector('#replyForm');
+        const alertBox = container.querySelector('#liveAlert');
+        const alertMsgSpan = container.querySelector('#alertMsg');
+        const submitBtn = container.querySelector('#submitBtn');
+        const backLink = container.querySelector('#backToFeedbacks');
+        const feedbackIdElem = container.querySelector('#feedbackId');
+
+        // ========== FILE UPLOAD HANDLER ==========
+        if (photoInput && photoFileNameSpan) {
+            photoInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const displayName = fileName.length > 35 ? fileName.substring(0, 32) + '...' : fileName;
+                    photoFileNameSpan.textContent = displayName;
+                    photoFileNameSpan.style.color = '#ff8c42';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#ff8c42';
+                } else {
+                    photoFileNameSpan.textContent = 'No file chosen';
+                    photoFileNameSpan.style.color = '#64748b';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#cbd5e1';
+                }
+            });
+        }
+
+        // ========== CHARACTER COUNTER ==========
+        if (replyTextarea && charCountSpan) {
+            function updateCharCount() {
+                const count = replyTextarea.value.length;
+                charCountSpan.innerText = count;
+                if (count > 500) {
+                    charCountSpan.style.color = '#e53e3e';
+                } else if (count > 300) {
+                    charCountSpan.style.color = '#ed8936';
+                } else {
+                    charCountSpan.style.color = '#8e9aaf';
+                }
+            }
+            replyTextarea.addEventListener('input', updateCharCount);
+            updateCharCount();
+        }
+
+        // ========== SHOW ALERT ==========
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                if (!isError) {
+                    alertBox.classList.add('alert-success-material');
+                } else {
+                    alertBox.classList.remove('alert-success-material');
+                }
+                setTimeout(() => {
+                    if (alertBox) alertBox.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        }
+
+        // ========== FORM VALIDATION ==========
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const replyText = replyTextarea ? replyTextarea.value.trim() : '';
+                const feedbackId = feedbackIdElem ? feedbackIdElem.value : '';
+                const photoFile = photoInput ? photoInput.files[0] : null;
+
+                if (!replyText) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your reply message.');
+                    if (replyTextarea) replyTextarea.focus();
+                    return false;
+                }
+
+                if (replyText.length < 5) {
+                    e.preventDefault();
+                    showAlert('❌ Reply must be at least 5 characters long.');
+                    if (replyTextarea) replyTextarea.focus();
+                    return false;
+                }
+
+                if (replyText.length > 1000) {
+                    e.preventDefault();
+                    showAlert('⚠️ Reply is too long. Maximum 1000 characters allowed.');
+                    if (replyTextarea) replyTextarea.focus();
+                    return false;
+                }
+
+                if (!feedbackId || feedbackId === '') {
+                    e.preventDefault();
+                    showAlert('⚠️ Feedback reference is missing. Please refresh and try again.');
+                    return false;
+                }
+
+                if (photoFile) {
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf'];
+                    if (!allowedTypes.includes(photoFile.type)) {
+                        e.preventDefault();
+                        showAlert('📎 Please upload a valid file (JPEG, PNG, WEBP, PDF).');
+                        return false;
+                    }
+                    if (photoFile.size > 5 * 1024 * 1024) {
+                        e.preventDefault();
+                        showAlert('📁 File size must be less than 5MB.');
+                        return false;
+                    }
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Sending Reply...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== FLOATING LABEL BEHAVIOR ==========
+        const inputs = container.querySelectorAll('.form-control-material');
+        inputs.forEach(input => {
+            function updateLabelState() {
+                const parentDiv = input.closest('.input-group-material');
+                if (!parentDiv) return;
+                const badge = parentDiv.querySelector('.label-badge');
+                const iconSpan = parentDiv.querySelector('.input-icon');
+                const hasValue = input.value.trim().length > 0;
+                const isFocused = document.activeElement === input;
+
+                if (badge) {
+                    if (isFocused || hasValue) {
+                        badge.style.color = '#ff8c42';
+                        badge.style.fontWeight = '700';
+                    } else {
+                        badge.style.color = '#8e9aaf';
+                        badge.style.fontWeight = '600';
+                    }
+                }
+                if (iconSpan) {
+                    if (isFocused) iconSpan.style.color = '#ff8c42';
+                    else iconSpan.style.color = '#8e9aaf';
+                }
+            }
+
+            updateLabelState();
+            input.addEventListener('focus', updateLabelState);
+            input.addEventListener('blur', updateLabelState);
+            input.addEventListener('input', updateLabelState);
+        });
+
+        // ========== RIPPLE EFFECT ==========
+        const materialBtns = container.querySelectorAll('.btn-material');
+        materialBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // ========== BACK LINK ==========
+        if (backLink) {
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAlert('↩️ Returning to feedback list...', false);
+                setTimeout(() => {
+                    // window.location.href = '/myapp/view_user_request_get/';
+                    console.log('Navigate to feedback list');
+                }, 600);
+            });
+        }
+
+        // ========== AUTO-FILL DETECTION ==========
+        setTimeout(() => {
+            container.querySelectorAll('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#ff8c42';
+                    }
+                }
+            });
+        }, 200);
+
+        // Debug info
+        if (feedbackIdElem && feedbackIdElem.value) {
+            console.log('Replying to feedback ID:', feedbackIdElem.value);
+        }
+    })();
+</script>
+</body>
+</html>
+{% endblock %}

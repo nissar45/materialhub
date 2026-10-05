@@ -1,0 +1,351 @@
+
+{% extends 'user/UserHome.html' %}
+{% block body %}
+
+<p>{{ data.name }}</p>
+<p><img src="{{ data.photo }}" height="50" width="50"></p>
+<p>{{ data.pin }}</p>
+<p>{{ data.place }}</p>
+<p>{{ data.post}}</p>
+<p>{{ data.number }}</p>
+<p>{{ data.email}}</p>
+
+ <a href="/myapp/editprofile_get/{{ data.id }}" class="btn btn-sm btn-primary">Edit</a>
+
+
+{% endblock %}
+
+{% extends 'user/UserHome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | My Profile</title>
+    <!-- Google Fonts + Material Icons + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .profile-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            width: 100%;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* main card */
+        .material-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 70px;
+            height: 70px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo-icon i {
+            font-size: 2rem;
+        }
+
+        .hub-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* profile body */
+        .profile-body {
+            padding: 2rem;
+        }
+
+        /* profile image section */
+        .profile-image-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8fafd, #eef2ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #ff8c42;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar .no-image {
+            font-size: 3rem;
+            color: #cbd5e1;
+        }
+
+        /* info grid */
+        .info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: #f8fafd;
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            border: 1px solid #e9ecef;
+        }
+
+        .info-row:hover {
+            background: #fffaf5;
+            border-color: #ff8c42;
+            transform: translateX(4px);
+        }
+
+        .info-icon {
+            width: 40px;
+            color: #ff8c42;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .info-label {
+            width: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8e9aaf;
+        }
+
+        .info-value {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        /* edit button */
+        .btn-edit {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-edit i {
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+            color: white;
+        }
+
+        .btn-edit:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ff8c42;
+        }
+
+        @media (max-width: 550px) {
+            .profile-body {
+                padding: 1.5rem;
+            }
+            .hub-header {
+                padding: 1.2rem;
+            }
+            .info-label {
+                width: 70px;
+                font-size: 0.65rem;
+            }
+            .info-value {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="profile-container">
+    <div class="material-card">
+        <!-- Header -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h1>My Profile</h1>
+            <p>Manage your personal information • Material Hub</p>
+        </div>
+
+        <!-- Profile Body -->
+        <div class="profile-body">
+            <!-- Profile Image -->
+            <div class="profile-image-section">
+                <div class="profile-avatar">
+                    {% if data.photo and data.photo != '' %}
+                        <img src="{{ data.photo }}" alt="Profile Photo">
+                    {% else %}
+                        <i class="fas fa-user no-image"></i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Information Grid -->
+            <div class="info-grid">
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-user"></i></div>
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">{{ data.name|default:"Not specified" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value">{{ data.number|default:"Not specified" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value">{{ data.email|default:"Not specified" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="info-label">Place</div>
+                    <div class="info-value">{{ data.place|default:"Not specified" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-location-dot"></i></div>
+                    <div class="info-label">Post Office</div>
+                    <div class="info-value">{{ data.post|default:"Not specified" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon"><i class="fas fa-mail-bulk"></i></div>
+                    <div class="info-label">PIN Code</div>
+                    <div class="info-value">{{ data.pin|default:"Not specified" }}</div>
+                </div>
+            </div>
+
+            <!-- Edit Button -->
+            <a href="/myapp/editprofile_get/{{ data.id }}" class="btn-edit">
+                <i class="fas fa-pen"></i> Edit Profile
+            </a>
+
+            <!-- Back Link -->
+            <div class="text-center">
+                <a href="/myapp/user_view_material/" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.65rem; color:#6c7a91;">Keep your information up to date</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

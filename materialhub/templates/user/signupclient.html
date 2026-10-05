@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Client Form</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<style>
+  body }
+    background-color: #f8f9fa;
+  }
+
+  .form-box }
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .form-group-line }
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .form-group-line label }
+    width: 120px;
+    font-weight: 500;
+  }
+
+  .form-group-line input }
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .form-group-line input:focus }
+    border-bottom: 2px solid #0d6efd;
+    outline: none;
+  }
+
+  .photo-box }
+    width: 70px;
+    height: 70px;
+    border: 1px solid #ccc;
+    float: right;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="form-box">
+  <h4 class="mb-3">Client Form</h4>
+
+  <div class="photo-box"></div>
+
+  <form method="post" action="/myapp/signupclient_post/" enctype="multipart/form-data">
+      {% csrf_token %}
+
+    <div class="form-group-line">
+      <label>Name :</label>
+      <input type="text" class="form-control" name="name" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Number :</label>
+      <input type="text" class="form-control" name="number" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Email :</label>
+      <input type="email" class="form-control" name="email" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Place :</label>
+      <input type="text" class="form-control" name="place" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Pin :</label>
+      <input type="text" class="form-control" name="pin" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Password :</label>
+      <input type="password" class="form-control" name="password" required>
+    </div>
+
+    <div class="form-group-line">
+      <label>Photo :</label>
+      <input type="file"    name="photo" class="form-control">
+    </div>
+
+    <div class="text-center mt-3">
+      <button class="btn btn-primary px-4">Submit</button>
+    </div>
+
+  </form>
+</div>
+
+ <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function () }
+      $('#registrationTable').DataTable();
+    });
+  </script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Material Hub | Client Registration</title>
+<!-- Google Fonts + Material Icons + Font Awesome -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    /* subtle overlay */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%);
+        pointer-events: none;
+    }
+
+    /* main card */
+    .material-card {
+        background: rgba(255, 255, 255, 0.97);
+        border-radius: 2rem;
+        box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+        width: 100%;
+        max-width: 600px;
+        border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .material-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* header */
+    .hub-header {
+        background: #1e2b3c;
+        padding: 1.6rem 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .hub-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 2rem;
+        right: 2rem;
+        height: 3px;
+        background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+        border-radius: 3px;
+    }
+
+    .logo-icon {
+        font-size: 2.4rem;
+        color: #ffb347;
+        background: rgba(255,255,255,0.1);
+        width: 64px;
+        height: 64px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        margin-bottom: 0.8rem;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo-icon i {
+        font-size: 2rem;
+    }
+
+    .hub-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        color: white;
+        margin: 0;
+    }
+
+    .hub-header p {
+        color: #cbdbe6;
+        font-size: 0.8rem;
+        margin-top: 0.3rem;
+        font-weight: 400;
+    }
+
+    /* form body */
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* material form group */
+    .input-group-material {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .input-group-material .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8e9aaf;
+        font-size: 1.2rem;
+        transition: color 0.2s;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .form-control-material {
+        width: 100%;
+        padding: 0.85rem 1rem 0.85rem 2.8rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        background-color: #f8fafd;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 1.2rem;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        color: #1e293b;
+    }
+
+    .form-control-material:focus {
+        outline: none;
+        border-color: #ff8c42;
+        box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+        background-color: #ffffff;
+    }
+
+    .form-control-material::placeholder {
+        color: #a0b3c9;
+        font-weight: 400;
+        font-size: 0.85rem;
+    }
+
+    /* floating label badge */
+    .label-badge {
+        position: absolute;
+        left: 2.8rem;
+        top: -0.6rem;
+        background: white;
+        padding: 0 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #ff8c42;
+        border-radius: 12px;
+        letter-spacing: 0.3px;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    /* file upload area */
+    .file-upload-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .file-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #f8fafd;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 1.2rem;
+        padding: 0.7rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+        color: #475569;
+    }
+
+    .file-label:hover {
+        border-color: #ff8c42;
+        background: #fffaf5;
+    }
+
+    .file-label i {
+        font-size: 1.4rem;
+        color: #ff8c42;
+    }
+
+    .file-label span {
+        font-size: 0.85rem;
+    }
+
+    #photo {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .file-name {
+        margin-left: auto;
+        font-size: 0.75rem;
+        color: #64748b;
+        background: #eef2ff;
+        padding: 0.2rem 0.6rem;
+        border-radius: 30px;
+    }
+
+    /* photo preview */
+    .photo-preview {
+        margin-top: 1rem;
+        text-align: center;
+        display: none;
+    }
+
+    .photo-preview img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 1rem;
+        border: 2px solid #ff8c42;
+        padding: 3px;
+        background: white;
+    }
+
+    /* submit button */
+    .btn-material {
+        background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+        border: none;
+        padding: 0.85rem 1.5rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+        color: white;
+        width: 100%;
+        transition: all 0.25s;
+        box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-material i {
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+    }
+
+    .btn-material:hover {
+        background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+        transform: scale(1.01);
+        box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+    }
+
+    .btn-material:active {
+        transform: scale(0.98);
+    }
+
+    /* login link */
+    .login-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #5a6e8a;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 1rem;
+        transition: color 0.2s;
+    }
+
+    .login-link:hover {
+        color: #ff8c42;
+        text-decoration: none;
+    }
+
+    /* alert */
+    .alert-material {
+        border-radius: 1rem;
+        border: none;
+        font-size: 0.85rem;
+        background: #fff4e8;
+        color: #c26b2c;
+        border-left: 4px solid #ff8c42;
+        margin-bottom: 1.5rem;
+        display: none;
+        padding: 0.75rem 1rem;
+    }
+
+    /* password strength */
+    .password-strength {
+        margin-top: 0.5rem;
+        padding-left: 2.8rem;
+        font-size: 0.7rem;
+    }
+
+    .strength-bar {
+        height: 4px;
+        border-radius: 4px;
+        margin-top: 6px;
+        transition: all 0.3s;
+        background: #e2e8f0;
+        width: 0%;
+    }
+
+    .strength-text {
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    /* ripple */
+    @keyframes ripple-animation {
+        to { transform: scale(6); opacity: 0; }
+    }
+    .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255,255,240,0.5);
+        transform: scale(0);
+        animation: ripple-animation 0.5s linear forwards;
+        pointer-events: none;
+    }
+
+    @media (max-width: 550px) {
+        .form-body {
+            padding: 1.5rem;
+        }
+        .hub-header {
+            padding: 1.2rem;
+        }
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="material-card">
+    <!-- Header -->
+    <div class="hub-header">
+        <div class="logo-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <h1>Client Registration</h1>
+        <p>Create your account • Material Hub</p>
+    </div>
+
+    <!-- Form Body -->
+    <div class="form-body">
+        <!-- Alert placeholder -->
+        <div id="liveAlert" class="alert-material" role="alert">
+            <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+        </div>
+
+        <form method="post" action="/myapp/signupclient_post/" enctype="multipart/form-data" id="registerForm">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">person</i></span>
+                <input type="text" class="form-control-material" id="name" name="name" placeholder=" " required autocomplete="off">
+                <span class="label-badge">Full Name</span>
+            </div>
+
+            <!-- Number -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">phone</i></span>
+                <input type="tel" class="form-control-material" id="number" name="number" placeholder=" " required autocomplete="off">
+                <span class="label-badge">Phone Number</span>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">email</i></span>
+                <input type="email" class="form-control-material" id="email" name="email" placeholder=" " required autocomplete="off">
+                <span class="label-badge">Email Address</span>
+            </div>
+
+            <!-- Place -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">location_on</i></span>
+                <input type="text" class="form-control-material" id="place" name="place" placeholder=" " required autocomplete="off">
+                <span class="label-badge">Place / City</span>
+            </div>
+
+            <!-- Pin -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">pin_drop</i></span>
+                <input type="text" class="form-control-material" id="pin" name="pin" placeholder=" " required autocomplete="off">
+                <span class="label-badge">Postal Code</span>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">lock</i></span>
+                <input type="password" class="form-control-material" id="password" name="password" placeholder=" " required autocomplete="new-password">
+                <span class="label-badge">Password</span>
+            </div>
+
+            <!-- Password Strength -->
+            <div class="password-strength">
+                <div class="strength-bar" id="strengthBar"></div>
+                <div class="strength-text" id="strengthText"></div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="input-group-material">
+                <span class="input-icon"><i class="material-icons-round">verified_user</i></span>
+                <input type="password" class="form-control-material" id="confirmPassword" name="confirm_password" placeholder=" " required>
+                <span class="label-badge">Confirm Password</span>
+            </div>
+            <div id="matchError" style="color: #e53e3e; font-size: 0.7rem; padding-left: 2.8rem; margin-top: -0.8rem; margin-bottom: 0.8rem; display: none;">
+                <i class="fas fa-exclamation-circle"></i> Passwords do not match
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="file-upload-wrapper">
+                <label for="photo" class="file-label" id="fileLabel">
+                    <i class="fas fa-camera-retro"></i>
+                    <span>Upload Profile Photo</span>
+                    <span class="file-name" id="fileNameDisplay">No file chosen</span>
+                </label>
+                <input type="file" id="photo" name="photo" accept="image/*">
+            </div>
+
+            <!-- Photo Preview -->
+            <div class="photo-preview" id="photoPreview">
+                <img id="previewImage" src="#" alt="Preview">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-material" id="submitBtn">
+                <span>Register Account</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <!-- Login Link -->
+        <div class="text-center">
+            <a href="/myapp/login/" class="login-link">
+                <i class="fas fa-sign-in-alt"></i> Already have an account? Login
+            </a>
+        </div>
+        <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#6c7a91;">By registering, you agree to our terms and conditions</p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (function() {
+        // DOM elements
+        const nameInput = document.getElementById('name');
+        const numberInput = document.getElementById('number');
+        const emailInput = document.getElementById('email');
+        const placeInput = document.getElementById('place');
+        const pinInput = document.getElementById('pin');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirmPassword');
+        const fileInput = document.getElementById('photo');
+        const fileNameSpan = document.getElementById('fileNameDisplay');
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+        const alertBox = document.getElementById('liveAlert');
+        const alertMsgSpan = document.getElementById('alertMsg');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('registerForm');
+        const matchErrorDiv = document.getElementById('matchError');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        // ========== PASSWORD STRENGTH ==========
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+            return strength;
+        }
+
+        function updateStrengthMeter() {
+            if (!strengthBar || !strengthText || !passwordInput) return;
+            const password = passwordInput.value;
+            if (!password) {
+                strengthBar.style.width = '0%';
+                strengthBar.style.backgroundColor = '#e2e8f0';
+                strengthText.textContent = '';
+                return;
+            }
+            const strength = checkPasswordStrength(password);
+            const widthPercent = (strength / 4) * 100;
+            strengthBar.style.width = widthPercent + '%';
+
+            let color = '#e53e3e';
+            let text = 'Weak';
+            if (strength === 2) {
+                color = '#ed8936';
+                text = 'Fair';
+            } else if (strength === 3) {
+                color = '#ecc94b';
+                text = 'Good';
+            } else if (strength === 4) {
+                color = '#48bb78';
+                text = 'Strong';
+            } else if (strength === 1) {
+                color = '#e53e3e';
+                text = 'Weak';
+            }
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = `Password Strength: ${text}`;
+            strengthText.style.color = color;
+        }
+
+        if (passwordInput) {
+            passwordInput.addEventListener('input', updateStrengthMeter);
+        }
+
+        // ========== CONFIRM PASSWORD VALIDATION ==========
+        function validatePasswordMatch() {
+            if (!matchErrorDiv || !passwordInput || !confirmInput) return true;
+            const newPass = passwordInput.value;
+            const confirmPass = confirmInput.value;
+            if (confirmPass === '') {
+                matchErrorDiv.style.display = 'none';
+                return true;
+            }
+            if (newPass !== confirmPass) {
+                matchErrorDiv.style.display = 'block';
+                return false;
+            } else {
+                matchErrorDiv.style.display = 'none';
+                return true;
+            }
+        }
+
+        if (confirmInput && passwordInput) {
+            confirmInput.addEventListener('input', validatePasswordMatch);
+            passwordInput.addEventListener('input', validatePasswordMatch);
+        }
+
+        // ========== FILE UPLOAD & PREVIEW ==========
+        if (fileInput && fileNameSpan) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileName = file.name;
+                    const displayName = fileName.length > 25 ? fileName.substring(0, 22) + '...' : fileName;
+                    fileNameSpan.textContent = displayName;
+                    fileNameSpan.style.color = '#ff8c42';
+                    const label = document.getElementById('fileLabel');
+                    if (label) label.style.borderColor = '#ff8c42';
+
+                    // Preview image
+                    if (photoPreview && previewImage) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            photoPreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                } else {
+                    fileNameSpan.textContent = 'No file chosen';
+                    fileNameSpan.style.color = '#64748b';
+                    photoPreview.style.display = 'none';
+                    const label = document.getElementById('fileLabel');
+                    if (label) label.style.borderColor = '#cbd5e1';
+                }
+            });
+        }
+
+        // ========== SHOW ALERT ==========
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    alertBox.style.display = 'none';
+                }, 5000);
+            } else {
+                alert(message);
+            }
+        }
+
+        // ========== FORM VALIDATION ==========
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const name = nameInput ? nameInput.value.trim() : '';
+                const number = numberInput ? numberInput.value.trim() : '';
+                const email = emailInput ? emailInput.value.trim() : '';
+                const place = placeInput ? placeInput.value.trim() : '';
+                const pin = pinInput ? pinInput.value.trim() : '';
+                const password = passwordInput ? passwordInput.value : '';
+                const confirm = confirmInput ? confirmInput.value : '';
+
+                // Name validation
+                if (!name) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your full name.');
+                    nameInput.focus();
+                    return false;
+                }
+
+                // Phone validation (10 digits)
+                if (!number) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your phone number.');
+                    numberInput.focus();
+                    return false;
+                }
+                const phoneRegex = /^[0-9]{10}$/;
+                if (!phoneRegex.test(number)) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter a valid 10-digit phone number.');
+                    numberInput.focus();
+                    return false;
+                }
+
+                // Email validation
+                if (!email) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your email address.');
+                    emailInput.focus();
+                    return false;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter a valid email address.');
+                    emailInput.focus();
+                    return false;
+                }
+
+                // Place validation
+                if (!place) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your place/city.');
+                    placeInput.focus();
+                    return false;
+                }
+
+                // PIN validation (6 digits)
+                if (!pin) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your postal code.');
+                    pinInput.focus();
+                    return false;
+                }
+                const pinRegex = /^[0-9]{6}$/;
+                if (!pinRegex.test(pin)) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter a valid 6-digit PIN code.');
+                    pinInput.focus();
+                    return false;
+                }
+
+                // Password validation
+                if (!password) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter a password.');
+                    passwordInput.focus();
+                    return false;
+                }
+                if (password.length < 6) {
+                    e.preventDefault();
+                    showAlert('⚠️ Password must be at least 6 characters long.');
+                    passwordInput.focus();
+                    return false;
+                }
+                const strength = checkPasswordStrength(password);
+                if (strength < 2) {
+                    e.preventDefault();
+                    showAlert('⚠️ Password is too weak. Use at least 8 characters with letters, numbers, and symbols.');
+                    passwordInput.focus();
+                    return false;
+                }
+
+                // Confirm password
+                if (password !== confirm) {
+                    e.preventDefault();
+                    showAlert('❌ Passwords do not match.');
+                    confirmInput.focus();
+                    return false;
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Registering...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== FLOATING LABEL BEHAVIOR ==========
+        const inputs = document.querySelectorAll('.form-control-material');
+        inputs.forEach(input => {
+            function updateLabelState() {
+                const parentDiv = input.closest('.input-group-material');
+                if (!parentDiv) return;
+                const badge = parentDiv.querySelector('.label-badge');
+                const iconSpan = parentDiv.querySelector('.input-icon');
+                const hasValue = input.value.trim().length > 0;
+                const isFocused = document.activeElement === input;
+
+                if (badge) {
+                    if (isFocused || hasValue) {
+                        badge.style.color = '#ff8c42';
+                        badge.style.fontWeight = '700';
+                    } else {
+                        badge.style.color = '#8e9aaf';
+                        badge.style.fontWeight = '600';
+                    }
+                }
+                if (iconSpan) {
+                    if (isFocused) iconSpan.style.color = '#ff8c42';
+                    else iconSpan.style.color = '#8e9aaf';
+                }
+            }
+
+            updateLabelState();
+            input.addEventListener('focus', updateLabelState);
+            input.addEventListener('blur', updateLabelState);
+            input.addEventListener('input', updateLabelState);
+        });
+
+        // ========== RIPPLE EFFECT ==========
+        const btns = document.querySelectorAll('.btn-material');
+        btns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,240,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // Auto-fill detection
+        setTimeout(() => {
+            document.querySelectorAll('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#ff8c42';
+                    }
+                }
+            });
+        }, 200);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+  <div class="container">
+    <h2 class="mb-4">Allocation</h2>
+    <form method="post" action="/myapp/allocationclient_post/" enctype="multipart/form-data">
+     {% csrf_token %}
+
+
+    <input type="hidden" name="id" value="{{ id }}">
+
+      <div class="row mb-3">
+        <label for="name" class="col-sm-4 ">Driver</label>
+        <div class="col-sm-8">
+           <select name="driver" >
+               {% for i in data %}
+               <option value="{{ i.id }}">
+               {{ i.name }}
+
+               </option>
+               {% endfor %}
+           </select>
+        </div>
+      </div>
+
+
+      <div class="row mb-3">
+        <div class="offset-sm-4 col-sm-8">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% extends 'admin/adminhome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Driver Allocation</title>
+    <!-- Google Fonts + Material Icons + Font Awesome (optional fallbacks) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Bootstrap 5 CSS (lightweight, but we'll scope styles) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ----- ISOLATED STYLES: all rules prefixed with .driver-allocation-container to avoid conflicts with parent adminhome.css ----- */
+        .driver-allocation-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .driver-allocation-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            min-height: auto;
+            padding: 1rem;
+            position: relative;
+            width: 100%;
+        }
+
+        /* main card */
+        .driver-allocation-container .material-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .driver-allocation-container .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .driver-allocation-container .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .driver-allocation-container .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .driver-allocation-container .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .driver-allocation-container .logo-icon i {
+            font-size: 2rem;
+        }
+
+        .driver-allocation-container .hub-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .driver-allocation-container .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* form body */
+        .driver-allocation-container .form-body {
+            padding: 2rem 2rem 2rem;
+        }
+
+        /* select wrapper */
+        .driver-allocation-container .material-select-wrapper {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .driver-allocation-container .material-select-wrapper .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e9aaf;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .driver-allocation-container .form-select-material {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238e9aaf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+
+        .driver-allocation-container .form-select-material:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+            background-color: #ffffff;
+        }
+
+        /* floating label */
+        .driver-allocation-container .label-badge {
+            position: absolute;
+            left: 2.8rem;
+            top: -0.6rem;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff8c42;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* driver preview card */
+        .driver-allocation-container .driver-info-card {
+            background: #f8fafd;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .driver-allocation-container .driver-info-card i:first-child {
+            font-size: 2rem;
+            color: #ff8c42;
+        }
+
+        .driver-allocation-container .driver-info-card .info-text {
+            flex: 1;
+        }
+
+        .driver-allocation-container .driver-info-card .info-text small {
+            color: #64748b;
+            font-size: 0.7rem;
+        }
+
+        .driver-allocation-container .driver-info-card .info-text p {
+            margin: 0;
+            font-weight: 600;
+            color: #1e2b3c;
+        }
+
+        /* allocation summary */
+        .driver-allocation-container .allocation-summary {
+            background: linear-gradient(135deg, #fff4e8, #ffe8d6);
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.8rem;
+            border-left: 4px solid #ff8c42;
+        }
+
+        .driver-allocation-container .allocation-summary i {
+            color: #ff8c42;
+            margin-right: 8px;
+        }
+
+        .driver-allocation-container .allocation-summary .summary-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #c26b2c;
+            font-weight: 600;
+        }
+
+        .driver-allocation-container .allocation-summary .summary-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e2b3c;
+            word-break: break-all;
+        }
+
+        /* button */
+        .driver-allocation-container .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .driver-allocation-container .btn-material i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .driver-allocation-container .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+        }
+
+        .driver-allocation-container .btn-material:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .driver-allocation-container .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: color 0.2s;
+        }
+
+        .driver-allocation-container .back-link i {
+            font-size: 1rem;
+        }
+
+        .driver-allocation-container .back-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* alert */
+        .driver-allocation-container .alert-material {
+            border-radius: 1rem;
+            border: none;
+            font-size: 0.85rem;
+            background: #fff4e8;
+            color: #c26b2c;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1.5rem;
+            display: none;
+            padding: 0.75rem 1rem;
+        }
+
+        .driver-allocation-container .driver-option-preview {
+            font-size: 0.8rem;
+            color: #475569;
+            margin-top: 0.5rem;
+            padding-left: 2.8rem;
+        }
+
+        /* ripple */
+        @keyframes driver-ripple-animation {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        .driver-allocation-container .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255,255,240,0.5);
+            transform: scale(0);
+            animation: driver-ripple-animation 0.5s linear forwards;
+            pointer-events: none;
+        }
+
+        /* responsive */
+        @media (max-width: 600px) {
+            .driver-allocation-container .form-body {
+                padding: 1.5rem;
+            }
+            .driver-allocation-container .hub-header {
+                padding: 1.2rem;
+            }
+            .driver-allocation-container .logo-icon {
+                width: 52px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Isolated wrapper: all styles are scoped under .driver-allocation-container -->
+<div class="driver-allocation-container">
+    <div class="material-card">
+        <!-- Header -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-truck-moving"></i>
+            </div>
+            <h1>Driver Allocation</h1>
+            <p>Assign driver to client request • Material Hub</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <!-- alert placeholder -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <!-- Allocation summary card (shows request ID) -->
+            <div class="allocation-summary">
+                <div class="summary-title">
+                    <i class="fas fa-hashtag"></i> REQUEST REFERENCE
+                </div>
+                <div class="summary-value" id="requestIdDisplay">
+                    <i class="fas fa-file-alt me-1"></i> Request ID: <span id="requestIdValue">--</span>
+                </div>
+            </div>
+
+            <form method="post" action="/myapp/allocationclient_post/" enctype="multipart/form-data" id="allocationForm">
+                {% csrf_token %}
+
+                <!-- Hidden field for request id -->
+                <input type="hidden" name="id" value="{{ id }}" id="requestIdHidden">
+
+                <!-- Driver Selection with Material Design -->
+                <div class="material-select-wrapper">
+                    <span class="input-icon"><i class="material-icons-round">drive_eta</i></span>
+                    <select name="driver" id="driverSelect" class="form-select-material" required>
+                        <option value="" disabled selected>— Select a driver —</option>
+                        {% for i in data %}
+                        <option value="{{ i.id }}" data-driver-name="{{ i.name }}" data-driver-contact="{{ i.contact|default:'N/A' }}">
+                            {{ i.name }} {% if i.contact %} ({{ i.contact }}) {% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <span class="label-badge">Assign Driver</span>
+                </div>
+
+                <!-- Live driver info preview -->
+                <div id="driverPreview" class="driver-info-card" style="display: none;">
+                    <i class="fas fa-user-circle"></i>
+                    <div class="info-text">
+                        <small>SELECTED DRIVER</small>
+                        <p id="previewDriverName">—</p>
+                        <small id="previewDriverContact"></small>
+                    </div>
+                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+                </div>
+
+                <div class="driver-option-preview" id="noDriverMsg">
+                    <i class="fas fa-info-circle"></i> Please select a driver from the list above
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Confirm Allocation</span>
+                    <i class="fas fa-check-double"></i>
+                </button>
+            </form>
+
+            <!-- back link -->
+            <div class="text-center">
+                <a href="/myapp/view_user_request_get/" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Requests
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#6c7a91;">Ensure driver availability before allocation</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: isolated logic using only elements inside .driver-allocation-container to avoid conflicts -->
+<script>
+    (function() {
+        // Scope everything to our container
+        const container = document.querySelector('.driver-allocation-container');
+        if (!container) return;
+
+        // Helper selectors within container
+        const driverSelect = container.querySelector('#driverSelect');
+        const driverPreview = container.querySelector('#driverPreview');
+        const previewDriverName = container.querySelector('#previewDriverName');
+        const previewDriverContact = container.querySelector('#previewDriverContact');
+        const noDriverMsg = container.querySelector('#noDriverMsg');
+        const alertBox = container.querySelector('#liveAlert');
+        const alertMsgSpan = container.querySelector('#alertMsg');
+        const submitBtn = container.querySelector('#submitBtn');
+        const requestIdHidden = container.querySelector('#requestIdHidden');
+        const requestIdValueSpan = container.querySelector('#requestIdValue');
+        const form = container.querySelector('#allocationForm');
+
+        // Get request ID from hidden field or Django variable
+        let requestId = '{{ id|default:"" }}';
+        if (requestId && requestId !== '') {
+            if (requestIdValueSpan) requestIdValueSpan.innerText = requestId;
+        } else {
+            // Try URL params as fallback
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlId = urlParams.get('id');
+            if (urlId) {
+                requestId = urlId;
+                if (requestIdHidden) requestIdHidden.value = urlId;
+                if (requestIdValueSpan) requestIdValueSpan.innerText = urlId;
+            } else {
+                if (requestIdValueSpan) requestIdValueSpan.innerText = 'Not specified';
+            }
+        }
+
+        // Show alert helper
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    if (alertBox) alertBox.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        }
+
+        // Update driver preview
+        function updateDriverPreview() {
+            const selectedOption = driverSelect.options[driverSelect.selectedIndex];
+            if (!selectedOption || !selectedOption.value) {
+                if (driverPreview) driverPreview.style.display = 'none';
+                if (noDriverMsg) noDriverMsg.style.display = 'block';
+                return;
+            }
+
+            const driverName = selectedOption.getAttribute('data-driver-name') || selectedOption.textContent.split('(')[0].trim();
+            const driverContact = selectedOption.getAttribute('data-driver-contact') || '';
+            if (previewDriverName) previewDriverName.innerText = driverName;
+            if (previewDriverContact) {
+                if (driverContact && driverContact !== 'N/A') {
+                    previewDriverContact.innerText = `📞 ${driverContact}`;
+                } else {
+                    previewDriverContact.innerText = 'Contact not available';
+                }
+            }
+            if (driverPreview) driverPreview.style.display = 'flex';
+            if (noDriverMsg) noDriverMsg.style.display = 'none';
+        }
+
+        // Attach change event
+        if (driverSelect) {
+            driverSelect.addEventListener('change', updateDriverPreview);
+            if (driverSelect.value) updateDriverPreview();
+        }
+
+        // Form validation & submission
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const selectedDriver = driverSelect ? driverSelect.value : '';
+                const reqId = requestIdHidden ? requestIdHidden.value : '';
+
+                if (!selectedDriver || selectedDriver === '') {
+                    e.preventDefault();
+                    showAlert('❌ Please select a driver to allocate this request.');
+                    if (driverSelect) driverSelect.focus();
+                    return false;
+                }
+
+                if (!reqId || reqId === '') {
+                    e.preventDefault();
+                    showAlert('⚠️ Request ID is missing. Please refresh and try again.');
+                    return false;
+                }
+
+                // Optional confirmation dialog
+                let selectedDriverName = 'selected driver';
+                if (driverSelect && driverSelect.options[driverSelect.selectedIndex]) {
+                    selectedDriverName = driverSelect.options[driverSelect.selectedIndex].textContent.split('(')[0].trim();
+                }
+                const confirmMsg = `Confirm allocation of Request #${reqId} to driver: ${selectedDriverName}?`;
+                if (!confirm(confirmMsg)) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Allocating...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // Ripple effect on button
+        const btns = container.querySelectorAll('.btn-material');
+        btns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // Check if any drivers exist
+        const driverOptions = driverSelect ? Array.from(driverSelect.querySelectorAll('option[value]:not([value=""])')) : [];
+        if (driverOptions.length === 0) {
+            showAlert('⚠️ No drivers available for allocation. Please add drivers first.', true);
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // Material focus/blur effects for select
+        if (driverSelect) {
+            const wrapper = driverSelect.closest('.material-select-wrapper');
+            driverSelect.addEventListener('focus', function() {
+                if (wrapper) {
+                    const icon = wrapper.querySelector('.input-icon');
+                    if (icon) icon.style.color = '#ff8c42';
+                    const badge = wrapper.querySelector('.label-badge');
+                    if (badge) badge.style.color = '#ff8c42';
+                }
+            });
+            driverSelect.addEventListener('blur', function() {
+                if (wrapper) {
+                    const icon = wrapper.querySelector('.input-icon');
+                    if (icon) icon.style.color = '#8e9aaf';
+                    const badge = wrapper.querySelector('.label-badge');
+                    if (badge && !this.value) badge.style.color = '#8e9aaf';
+                    else if (badge && this.value) badge.style.color = '#ff8c42';
+                }
+            });
+        }
+    })();
+</script>
+</body>
+</html>
+{% endblock %}

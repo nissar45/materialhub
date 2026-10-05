@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Complaint</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h4 class="mb-4">Material Management</h4>
+    <form method="post" action="/myapp/add_material_post/" enctype="multipart/form-data">
+        {% csrf_token %}
+          <div class="form-group">
+                        <label for="username">Name</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your name" name="name" required>
+                    </div>
+         <div class="form-group">
+                        <label for="username">Type</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your type" name="type" required>
+                    </div>
+
+      <!-- Complaint Text -->
+      <div class="mb-3">
+        <label for="complaint" class="form-label">About</label>
+        <textarea class="form-control" id="complaint" rows="4" placeholder="Write your detail here..." name="about" required></textarea>
+      </div>
+
+         <div class="form-group">
+                        <label for="username">Amount</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your Amount" name="amount" required>
+                    </div>
+
+      <!-- Optional File Upload -->
+      <div class="mb-3">
+        <label for="photo" class="form-label">Attach Photo</label>
+        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% extends 'admin/adminhome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Add New Material</title>
+    <!-- Google Fonts + Material Icons + Font Awesome (only if not already loaded) -->
+    <!-- We'll use fallback to avoid duplicate conflicts but ensure icons work -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Bootstrap 5 CSS (lightweight) – but we will scope styles to avoid conflict with parent -->
+    <style>
+        /* ----- RESET & OVERRIDE only within this component ----- */
+        /* Use specific wrapper class to avoid global conflicts with adminhome */
+        .material-hub-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .material-hub-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;  /* inherit parent background, we will set own card bg */
+            min-height: auto;
+            padding: 1rem;
+            position: relative;
+            width: 100%;
+        }
+
+        /* main material card – isolated */
+        .material-hub-container .material-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .material-hub-container .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header with brand gradient */
+        .material-hub-container .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .material-hub-container .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .material-hub-container .logo-icon {
+            font-size: 2.6rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            text-align: center;
+            border-radius: 24px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .material-hub-container .logo-icon i {
+            font-size: 2.3rem;
+        }
+
+        .material-hub-container .hub-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .material-hub-container .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* form body */
+        .material-hub-container .form-body {
+            padding: 2rem 2rem 2rem;
+        }
+
+        /* modern material form groups */
+        .material-hub-container .input-group-material {
+            margin-bottom: 1.6rem;
+            position: relative;
+        }
+
+        .material-hub-container .input-group-material .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e9aaf;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .material-hub-container .form-control-material {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .material-hub-container textarea.form-control-material {
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .material-hub-container .form-control-material:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+            background-color: #ffffff;
+        }
+
+        .material-hub-container .form-control-material::placeholder {
+            color: #a0b3c9;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        /* floating label badge */
+        .material-hub-container .label-badge {
+            position: absolute;
+            left: 2.8rem;
+            top: -0.6rem;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff8c42;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 3;
+            transition: all 0.1s;
+        }
+
+        /* file upload custom style */
+        .material-hub-container .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1.6rem;
+        }
+
+        .material-hub-container .file-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafd;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 1.2rem;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .material-hub-container .file-label:hover {
+            border-color: #ff8c42;
+            background: #fffaf5;
+        }
+
+        .material-hub-container .file-label i {
+            font-size: 1.4rem;
+            color: #ff8c42;
+        }
+
+        .material-hub-container .file-label span {
+            font-size: 0.85rem;
+        }
+
+        .material-hub-container #photo {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .material-hub-container .file-name {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #eef2ff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+        }
+
+        /* submit button material */
+        .material-hub-container .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .material-hub-container .btn-material i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .material-hub-container .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+        }
+
+        .material-hub-container .btn-material:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .material-hub-container .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .material-hub-container .back-link i {
+            font-size: 1rem;
+        }
+
+        .material-hub-container .back-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* alert */
+        .material-hub-container .alert-material {
+            border-radius: 1rem;
+            border: none;
+            font-size: 0.85rem;
+            background: #fff4e8;
+            color: #c26b2c;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        /* responsive */
+        @media (max-width: 600px) {
+            .material-hub-container .form-body {
+                padding: 1.5rem;
+            }
+            .material-hub-container .hub-header {
+                padding: 1.2rem;
+            }
+            .material-hub-container .logo-icon {
+                width: 52px;
+                height: 52px;
+            }
+            .material-hub-container .logo-icon i {
+                font-size: 1.8rem;
+            }
+            .material-hub-container .hub-header h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .material-hub-container input[type=number]::-webkit-inner-spin-button,
+        .material-hub-container input[type=number]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+
+        /* ripple animation */
+        .material-hub-container .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255,255,240,0.5);
+            transform: scale(0);
+            animation: ripple-animation 0.5s linear forwards;
+            pointer-events: none;
+        }
+        @keyframes ripple-animation {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        .material-hub-container .form-check-input:checked {
+            background-color: #ff8c42;
+            border-color: #ff8c42;
+        }
+        .material-hub-container input:-webkit-autofill,
+        .material-hub-container input:-webkit-autofill:focus {
+            transition: background-color 0s 600000s, color 0s 600000s;
+        }
+        .material-hub-container .file-label i {
+            transition: transform 0.1s;
+        }
+        .material-hub-container .file-label:hover i {
+            transform: scale(1.05);
+        }
+        .material-hub-container textarea.form-control-material {
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+<!-- Wrap entire component in unique class container to avoid style conflicts -->
+<div class="material-hub-container">
+    <div class="material-card">
+        <!-- Header: Material Hub branding -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <h1>Add Material</h1>
+            <p>Register new inventory item • Manage resources</p>
+        </div>
+
+        <!-- Form body -->
+        <div class="form-body">
+            <!-- alert placeholder for feedback -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <form method="post" action="/myapp/add_material_post/" enctype="multipart/form-data" id="materialForm">
+                {% csrf_token %}
+
+                <!-- Material Name -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">inventory_2</i></span>
+                    <input type="text" class="form-control-material" id="materialName" name="name" placeholder=" " required autocomplete="off">
+                    <span class="label-badge">Material Name</span>
+                </div>
+
+                <!-- Type -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">category</i></span>
+                    <input type="text" class="form-control-material" id="materialType" name="type" placeholder=" " required autocomplete="off">
+                    <span class="label-badge">Material Type</span>
+                </div>
+
+                <!-- About / Description -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">description</i></span>
+                    <textarea class="form-control-material" id="materialAbout" name="about" rows="3" placeholder=" " required></textarea>
+                    <span class="label-badge">About / Details</span>
+                </div>
+
+                <!-- Amount -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">attach_money</i></span>
+                    <input type="number" step="0.01" class="form-control-material" id="materialAmount" name="amount" placeholder=" " required>
+                    <span class="label-badge">Amount (₹)</span>
+                </div>
+
+                <!-- File upload: Photo -->
+                <div class="file-upload-wrapper">
+                    <label for="photo" class="file-label" id="fileLabel">
+                        <i class="fas fa-camera-retro"></i>
+                        <span>Attach Photo / Image</span>
+                        <span class="file-name" id="fileNameDisplay">No file chosen</span>
+                    </label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Add Material</span>
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+            </form>
+
+            <!-- extra navigation: back to hub -->
+            <div class="text-center mt-4">
+                <a href="#" class="back-link" id="dashboardMockLink">
+                    <i class="fas fa-arrow-left"></i> Back to Material Hub
+                </a>
+            </div>
+            <p class="text-center mt-2 mb-0" style="font-size: 0.7rem; color:#6c7a91;">Ensure all fields are filled before submission</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: ensure jQuery & Bootstrap are already present in adminhome, but we will not conflict -->
+<!-- We'll run our isolated scripts with namespaced selectors -->
+<script>
+    (function() {
+        // Scope all DOM manipulations inside material-hub-container to avoid conflicts with parent
+        const container = document.querySelector('.material-hub-container');
+        if (!container) return;
+
+        // Helper to get elements inside this container only
+        const $ = (selector) => container.querySelector(selector);
+        const $$ = (selector) => container.querySelectorAll(selector);
+
+        // ========== FLOATING LABEL & ICON ==========
+        const inputs = $$('.form-control-material');
+
+        function updateFieldState(input) {
+            const parentDiv = input.closest('.input-group-material');
+            if (!parentDiv) return;
+            const badge = parentDiv.querySelector('.label-badge');
+            const iconSpan = parentDiv.querySelector('.input-icon');
+            const hasValue = input.value.trim().length > 0;
+            const isFocused = document.activeElement === input;
+
+            if (badge) {
+                if (isFocused || hasValue) {
+                    badge.style.color = '#ff8c42';
+                    badge.style.fontWeight = '700';
+                } else {
+                    badge.style.color = '#8e9aaf';
+                    badge.style.fontWeight = '600';
+                }
+            }
+            if (iconSpan) {
+                if (isFocused) iconSpan.style.color = '#ff8c42';
+                else iconSpan.style.color = '#8e9aaf';
+            }
+        }
+
+        inputs.forEach(input => {
+            updateFieldState(input);
+            input.addEventListener('focus', () => updateFieldState(input));
+            input.addEventListener('blur', () => updateFieldState(input));
+            input.addEventListener('input', () => updateFieldState(input));
+        });
+
+        // ========== FILE UPLOAD CUSTOM LABEL ==========
+        const fileInput = $('#photo');
+        const fileNameSpan = $('#fileNameDisplay');
+        if (fileInput && fileNameSpan) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const displayName = fileName.length > 25 ? fileName.substring(0, 22) + '...' : fileName;
+                    fileNameSpan.textContent = displayName;
+                    fileNameSpan.style.color = '#ff8c42';
+                    fileNameSpan.style.fontWeight = '500';
+                    const label = $('#fileLabel');
+                    if (label) label.style.borderColor = '#ff8c42';
+                } else {
+                    fileNameSpan.textContent = 'No file chosen';
+                    fileNameSpan.style.color = '#64748b';
+                    const label = $('#fileLabel');
+                    if (label) label.style.borderColor = '#cbd5e1';
+                }
+            });
+        }
+
+        // ========== FORM VALIDATION ==========
+        const form = $('#materialForm');
+        const alertBox = $('#liveAlert');
+        const alertMsgSpan = $('#alertMsg');
+        const submitBtn = $('#submitBtn');
+
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    if (alertBox) alertBox.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        }
+
+        function validateAmount(value) {
+            const num = parseFloat(value);
+            if (isNaN(num)) return false;
+            if (num < 0) return false;
+            return true;
+        }
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const name = $('#materialName')?.value.trim() || '';
+                const type = $('#materialType')?.value.trim() || '';
+                const about = $('#materialAbout')?.value.trim() || '';
+                const amountRaw = $('#materialAmount')?.value.trim() || '';
+
+                if (!name) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter the material name.');
+                    $('#materialName')?.focus();
+                    return false;
+                }
+                if (!type) {
+                    e.preventDefault();
+                    showAlert('❌ Material type is required.');
+                    $('#materialType')?.focus();
+                    return false;
+                }
+                if (!about) {
+                    e.preventDefault();
+                    showAlert('❌ Please provide details about the material.');
+                    $('#materialAbout')?.focus();
+                    return false;
+                }
+                if (!amountRaw) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter the amount/price.');
+                    $('#materialAmount')?.focus();
+                    return false;
+                }
+                if (!validateAmount(amountRaw)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Amount must be a valid positive number.');
+                    $('#materialAmount')?.focus();
+                    return false;
+                }
+
+                const file = fileInput?.files[0];
+                if (file) {
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        e.preventDefault();
+                        showAlert('📸 Please upload a valid image file (JPEG, PNG, WEBP, GIF).');
+                        return false;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        e.preventDefault();
+                        showAlert('📁 Image size must be less than 5MB.');
+                        return false;
+                    }
+                }
+
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Adding Material...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== BACK LINK MOCK ==========
+        const backLink = $('#dashboardMockLink');
+        if (backLink) {
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/myapp/adminhome_get/';
+
+                showAlert('🔙 Redirect to Material Dashboard (demo) – integrate your actual URL.', false);
+            });
+        }
+
+        // ========== RIPPLE EFFECT ON BUTTON ==========
+        const materialBtns = $$('.btn-material');
+        materialBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                let ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // ========== AMOUNT FIELD SANITIZATION ==========
+        const amountField = $('#materialAmount');
+        if (amountField) {
+            amountField.addEventListener('input', function(e) {
+                let val = this.value;
+                if (val !== '' && !/^\d*\.?\d*$/.test(val)) {
+                    this.value = val.slice(0, -1);
+                }
+            });
+        }
+
+        // ========== AUTO-FILL DETECTION ==========
+        setTimeout(() => {
+            $$('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#ff8c42';
+                    }
+                }
+            });
+        }, 200);
+    })();
+</script>
+</body>
+</html>
+{% endblock %}

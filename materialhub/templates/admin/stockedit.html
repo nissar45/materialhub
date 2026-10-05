@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center">Stock</h2>
+                                <form method="post" action="/myapp/edit_stock_post/">
+                    {% csrf_token %}
+                                <input type="hidden" value="{{ data.id }}" name="id">
+                    <div class="form-group">
+                        <label for="username">Material</label>
+                        <select name="name" class="form-control">
+                            {% for i in data1 %}
+                            <option {% if i.MATERIALS.id == i.id %}selected{% endif %} value="{{ i.id }}">{{ i.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Stock no.</label>
+                        <input type="text" class="form-control" id="password" name="stock" value="{{ data.stock_no }}" placeholder="Enter your no..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% extends 'admin/adminhome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Edit Stock</title>
+    <!-- Google Fonts + Material Icons + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Bootstrap 5 CSS (lightweight, but we'll scope styles) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ----- ISOLATED STYLES: all rules prefixed with .edit-stock-container to avoid conflicts with parent adminhome.css ----- */
+        .edit-stock-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .edit-stock-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        /* main card */
+        .edit-stock-container .material-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 580px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .edit-stock-container .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .edit-stock-container .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .edit-stock-container .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .edit-stock-container .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .edit-stock-container .logo-icon i {
+            font-size: 2rem;
+        }
+
+        .edit-stock-container .hub-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .edit-stock-container .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* form body */
+        .edit-stock-container .form-body {
+            padding: 2rem 2rem 2rem;
+        }
+
+        /* form groups */
+        .edit-stock-container .input-group-material {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .edit-stock-container .input-group-material .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e9aaf;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .edit-stock-container .form-control-material {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .edit-stock-container .form-control-material:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+            background-color: #ffffff;
+        }
+
+        .edit-stock-container .form-control-material::placeholder {
+            color: #a0b3c9;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        /* floating label */
+        .edit-stock-container .label-badge {
+            position: absolute;
+            left: 2.8rem;
+            top: -0.6rem;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff8c42;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* select dropdown styling */
+        .edit-stock-container select.form-control-material {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238e9aaf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+
+        /* preview cards */
+        .edit-stock-container .material-preview {
+            background: #fef9f0;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ff8c42;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .edit-stock-container .material-preview i {
+            color: #ff8c42;
+            font-size: 1.2rem;
+        }
+
+        .edit-stock-container .material-preview .preview-content {
+            flex: 1;
+        }
+
+        .edit-stock-container .material-preview .preview-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #c26b2c;
+            font-weight: 600;
+        }
+
+        .edit-stock-container .material-preview .preview-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e2b3c;
+        }
+
+        .edit-stock-container .current-stock-info {
+            background: #f1f5f9;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .edit-stock-container .current-stock-info i {
+            color: #64748b;
+        }
+
+        /* submit button */
+        .edit-stock-container .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edit-stock-container .btn-material i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .edit-stock-container .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+        }
+
+        .edit-stock-container .btn-material:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .edit-stock-container .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .edit-stock-container .back-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* alert */
+        .edit-stock-container .alert-material {
+            border-radius: 1rem;
+            border: none;
+            font-size: 0.85rem;
+            background: #fff4e8;
+            color: #c26b2c;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1.5rem;
+            display: none;
+            padding: 0.75rem 1rem;
+        }
+
+        /* number input */
+        .edit-stock-container input[type=number]::-webkit-inner-spin-button,
+        .edit-stock-container input[type=number]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+
+        /* ripple animation */
+        @keyframes stock-ripple-animation {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        .edit-stock-container .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255,255,240,0.5);
+            transform: scale(0);
+            animation: stock-ripple-animation 0.5s linear forwards;
+            pointer-events: none;
+        }
+
+        @media (max-width: 520px) {
+            .edit-stock-container .form-body {
+                padding: 1.5rem;
+            }
+            .edit-stock-container .hub-header {
+                padding: 1.2rem;
+            }
+            .edit-stock-container .logo-icon {
+                width: 52px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Isolated wrapper: all styles are scoped under .edit-stock-container -->
+<div class="edit-stock-container">
+    <div class="material-card">
+        <!-- Header -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <h1>Edit Stock</h1>
+            <p>Update inventory quantity • Material Hub</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <!-- alert placeholder -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <!-- Material Preview Card -->
+            <div class="material-preview" id="materialPreview">
+                <i class="fas fa-cube"></i>
+                <div class="preview-content">
+                    <div class="preview-label">Selected Material</div>
+                    <div class="preview-value" id="previewMaterialName">--</div>
+                </div>
+            </div>
+
+            <!-- Current Stock Info -->
+            <div class="current-stock-info" id="currentStockInfo">
+                <i class="fas fa-boxes"></i>
+                <div class="preview-content">
+                    <div class="preview-label">Current Stock Quantity</div>
+                    <div class="preview-value" id="currentStockValue">{{ data.stock_no|default:"0" }}</div>
+                </div>
+            </div>
+
+            <form method="post" action="/myapp/edit_stock_post/" id="editStockForm">
+                {% csrf_token %}
+
+                <!-- Hidden ID field -->
+                <input type="hidden" name="id" value="{{ data.id }}" id="stockId">
+
+                <!-- Material Selection -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">inventory_2</i></span>
+                    <select name="name" id="materialSelect" class="form-control-material" required>
+                        <option value="" disabled>— Select a material —</option>
+                        {% for i in data1 %}
+                        <option value="{{ i.MATERIALS.id|default:i.id }}" data-material-name="{{ i.name }}">
+                            {{ i.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <span class="label-badge">Material</span>
+                </div>
+
+                <!-- Stock Quantity -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="material-icons-round">numbers</i></span>
+                    <input type="number" class="form-control-material" id="stockQuantity" name="stock" value="{{ data.stock_no }}" placeholder=" " required min="0" step="1">
+                    <span class="label-badge">Stock Quantity</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Update Stock</span>
+                    <i class="fas fa-save"></i>
+                </button>
+            </form>
+
+            <!-- back link -->
+            <div class="text-center">
+                <a href="/myapp/view_stock_get/" class="back-link" id="backToStock">
+                    <i class="fas fa-arrow-left"></i> Back to Stock List
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#6c7a91;">Update stock quantity for existing inventory items</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: isolated logic using container scoping -->
+<script>
+    (function() {
+        // Scope everything to our container
+        const container = document.querySelector('.edit-stock-container');
+        if (!container) return;
+
+        // Helper selectors within container
+        const materialSelect = container.querySelector('#materialSelect');
+        const previewMaterialName = container.querySelector('#previewMaterialName');
+        const currentStockSpan = container.querySelector('#currentStockValue');
+        const stockQuantityInput = container.querySelector('#stockQuantity');
+        const form = container.querySelector('#editStockForm');
+        const alertBox = container.querySelector('#liveAlert');
+        const alertMsgSpan = container.querySelector('#alertMsg');
+        const submitBtn = container.querySelector('#submitBtn');
+        const backLink = container.querySelector('#backToStock');
+        const stockIdElem = container.querySelector('#stockId');
+
+        // ========== SET PRE-SELECTED MATERIAL BASED ON CURRENT STOCK ==========
+        // The stock record has a material_id that should match one of the options
+        {% if data.MATERIALS.id %}
+            const currentMaterialId = "{{ data.MATERIALS.id }}";
+            if (materialSelect) {
+                for (let i = 0; i < materialSelect.options.length; i++) {
+                    if (materialSelect.options[i].value === currentMaterialId) {
+                        materialSelect.options[i].selected = true;
+                        break;
+                    }
+                }
+            }
+        {% elif data.material_id %}
+            const currentMaterialId = "{{ data.material_id }}";
+            if (materialSelect) {
+                for (let i = 0; i < materialSelect.options.length; i++) {
+                    if (materialSelect.options[i].value === currentMaterialId) {
+                        materialSelect.options[i].selected = true;
+                        break;
+                    }
+                }
+            }
+        {% endif %}
+
+        // ========== UPDATE MATERIAL PREVIEW ==========
+        function updateMaterialPreview() {
+            if (!materialSelect || !previewMaterialName) return;
+            const selectedOption = materialSelect.options[materialSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const materialName = selectedOption.getAttribute('data-material-name') || selectedOption.textContent;
+                previewMaterialName.innerText = materialName;
+            } else {
+                previewMaterialName.innerText = '-- Select a material --';
+            }
+        }
+
+        if (materialSelect) {
+            updateMaterialPreview();
+            materialSelect.addEventListener('change', updateMaterialPreview);
+            // Trigger initial floating label state for select
+            if (materialSelect.value) {
+                const parentDiv = materialSelect.closest('.input-group-material');
+                if (parentDiv) {
+                    const badge = parentDiv.querySelector('.label-badge');
+                    if (badge) badge.style.color = '#ff8c42';
+                }
+            }
+        }
+
+        // ========== SHOW ALERT ==========
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    if (alertBox) alertBox.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        }
+
+        // ========== FORM VALIDATION ==========
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const selectedMaterial = materialSelect ? materialSelect.value : '';
+                const stockValue = stockQuantityInput ? stockQuantityInput.value.trim() : '';
+                const stockId = stockIdElem ? stockIdElem.value : '';
+
+                if (!selectedMaterial || selectedMaterial === '') {
+                    e.preventDefault();
+                    showAlert('❌ Please select a material.');
+                    if (materialSelect) materialSelect.focus();
+                    return false;
+                }
+
+                if (!stockValue) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter stock quantity.');
+                    if (stockQuantityInput) stockQuantityInput.focus();
+                    return false;
+                }
+
+                const stockNum = parseInt(stockValue, 10);
+                if (isNaN(stockNum)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Please enter a valid numeric quantity.');
+                    if (stockQuantityInput) stockQuantityInput.focus();
+                    return false;
+                }
+
+                if (stockNum < 0) {
+                    e.preventDefault();
+                    showAlert('⚠️ Stock quantity cannot be negative.');
+                    if (stockQuantityInput) stockQuantityInput.focus();
+                    return false;
+                }
+
+                if (stockNum > 999999) {
+                    e.preventDefault();
+                    showAlert('⚠️ Stock quantity is too high. Maximum 999,999 units allowed.');
+                    if (stockQuantityInput) stockQuantityInput.focus();
+                    return false;
+                }
+
+                if (!stockId) {
+                    e.preventDefault();
+                    showAlert('⚠️ Stock record reference missing. Please refresh and try again.');
+                    return false;
+                }
+
+                // Get material name for confirmation
+                const selectedOption = materialSelect.options[materialSelect.selectedIndex];
+                const materialName = selectedOption ? (selectedOption.getAttribute('data-material-name') || selectedOption.textContent) : 'selected material';
+                const currentStock = currentStockSpan ? currentStockSpan.innerText : '0';
+                const confirmMsg = `Update stock for "${materialName}" from ${currentStock} to ${stockNum} units?`;
+                if (!confirm(confirmMsg)) }
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Updating Stock...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== FLOATING LABEL BEHAVIOR ==========
+        const inputs = container.querySelectorAll('.form-control-material');
+        inputs.forEach(input => {
+            function updateLabelState() {
+                const parentDiv = input.closest('.input-group-material');
+                if (!parentDiv) return;
+                const badge = parentDiv.querySelector('.label-badge');
+                const iconSpan = parentDiv.querySelector('.input-icon');
+                const hasValue = input.value !== null && input.value.toString().trim().length > 0;
+                const isFocused = document.activeElement === input;
+
+                if (badge) {
+                    if (isFocused || hasValue) {
+                        badge.style.color = '#ff8c42';
+                        badge.style.fontWeight = '700';
+                    } else {
+                        badge.style.color = '#8e9aaf';
+                        badge.style.fontWeight = '600';
+                    }
+                }
+                if (iconSpan) {
+                    if (isFocused) iconSpan.style.color = '#ff8c42';
+                    else iconSpan.style.color = '#8e9aaf';
+                }
+            }
+
+            updateLabelState();
+            input.addEventListener('focus', updateLabelState);
+            input.addEventListener('blur', updateLabelState);
+            input.addEventListener('input', updateLabelState);
+        });
+
+        // ========== RIPPLE EFFECT ==========
+        const materialBtns = container.querySelectorAll('.btn-material');
+        materialBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // ========== BACK LINK ==========
+        if (backLink) {
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAlert('↩️ Returning to stock list...', false);
+                setTimeout(() => {
+                     window.location.href = '/myapp/view_stock_get/';
+                    console.log('Navigate to stock list');
+                }, 600);
+            });
+        }
+
+        // ========== CHECK IF ANY MATERIALS AVAILABLE ==========
+        const materialOptionsList = materialSelect ? Array.from(materialSelect.querySelectorAll('option[value]:not([value=""])')) : [];
+        if (materialOptionsList.length === 0) {
+            showAlert('⚠️ No materials found. Please add materials before editing stock.', true);
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // ========== AUTO-FILL DETECTION ==========
+        setTimeout(() => {
+            container.querySelectorAll('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.toString().trim().length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#ff8c42';
+                    }
+                }
+            });
+        }, 200);
+
+        // ========== STOCK INPUT RESTRICTION ==========
+        if (stockQuantityInput) {
+            stockQuantityInput.addEventListener('input', function(e) {
+                let val = this.value;
+                if (val !== '' && !/^\d*$/.test(val)) {
+                    this.value = val.replace(/[^0-9]/g, '');
+                }
+                if (parseInt(this.value) < 0) {
+                    this.value = 0;
+                }
+            });
+        }
+
+        // Debug info
+        if (stockIdElem && stockIdElem.value) {
+            console.log('Editing stock record ID:', stockIdElem.value);
+        }
+    })();
+</script>
+</body>
+</html>
+{% endblock %}

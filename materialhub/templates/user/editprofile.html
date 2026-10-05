@@ -1,0 +1,665 @@
+{% extends 'user/UserHome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEXUS | Edit Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Google Fonts: Modern Minimalist -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+    /* ----- ISOLATED STYLES - Only affects content inside this block ----- */
+    .profile-nexus-container * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .profile-nexus-container {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: transparent;
+        color: #2c2c2c;
+        line-height: 1.5;
+        padding: 1rem;
+    }
+
+    /* Profile Card */
+    .profile-nexus-container .profile-card {
+        max-width: 620px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 28px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        border: 1px solid #efefef;
+        transition: transform 0.2s ease;
+    }
+
+    .profile-nexus-container .profile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Header */
+    .profile-nexus-container .card-header-minimal {
+        background: white;
+        padding: 1.8rem 2rem;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .profile-nexus-container .avatar-icon {
+        width: 80px;
+        height: 80px;
+        background: #f5f3f0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .profile-nexus-container .avatar-icon i {
+        font-size: 2.5rem;
+        color: #b0a8a0;
+    }
+
+    .profile-nexus-container .card-header-minimal h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem;
+        font-weight: 500;
+        letter-spacing: -0.3px;
+        color: #1a1a1a;
+        margin-bottom: 0.3rem;
+    }
+
+    .profile-nexus-container .card-header-minimal p {
+        font-size: 0.8rem;
+        color: #8a8a8a;
+        letter-spacing: 0.3px;
+    }
+
+    /* Form Body */
+    .profile-nexus-container .form-body {
+        padding: 2rem;
+    }
+
+    /* Material form groups */
+    .profile-nexus-container .input-group-material {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .profile-nexus-container .input-group-material .input-icon {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #b0a8a0;
+        font-size: 1rem;
+        transition: color 0.2s;
+        z-index: 2;
+        width: 32px;
+        text-align: center;
+    }
+
+    .profile-nexus-container .form-control-material {
+        width: 100%;
+        padding: 0.85rem 0.85rem 0.85rem 2.2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background-color: #fafaf8;
+        border: none;
+        border-bottom: 1.5px solid #eaeaea;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        color: #2c2c2c;
+        border-radius: 0;
+    }
+
+    .profile-nexus-container .form-control-material:focus {
+        outline: none;
+        border-bottom-color: #1a1a1a;
+        background-color: #ffffff;
+    }
+
+    .profile-nexus-container .form-control-material::placeholder {
+        color: #c0c0c0;
+        font-weight: 400;
+        font-size: 0.85rem;
+    }
+
+    /* Floating label effect */
+    .profile-nexus-container .label-badge {
+        position: absolute;
+        left: 2rem;
+        top: -0.55rem;
+        background: white;
+        padding: 0 6px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #8a8a8a;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+        pointer-events: none;
+        transition: all 0.1s;
+    }
+
+    .profile-nexus-container .form-control-material:focus ~ .label-badge,
+    .profile-nexus-container .form-control-material:not(:placeholder-shown) ~ .label-badge {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    /* Photo upload area */
+    .profile-nexus-container .photo-upload-wrapper {
+        margin-bottom: 1.8rem;
+        position: relative;
+    }
+
+    .profile-nexus-container .photo-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fafaf8;
+        border: 1.5px dashed #e0e0e0;
+        border-radius: 60px;
+        padding: 0.7rem 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 500;
+        color: #6b6b6b;
+    }
+
+    .profile-nexus-container .photo-label:hover {
+        border-color: #1a1a1a;
+        background: #fff;
+    }
+
+    .profile-nexus-container .photo-label i {
+        font-size: 1.2rem;
+        color: #b0a8a0;
+    }
+
+    .profile-nexus-container .photo-label span {
+        font-size: 0.85rem;
+    }
+
+    .profile-nexus-container .photo-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .profile-nexus-container .file-name {
+        margin-left: auto;
+        font-size: 0.7rem;
+        color: #8a8a8a;
+        background: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 30px;
+    }
+
+    /* Current photo preview */
+    .profile-nexus-container .current-photo-info {
+        background: #f5f3f0;
+        border-radius: 16px;
+        padding: 0.6rem 1rem;
+        margin-bottom: 1.2rem;
+        font-size: 0.75rem;
+        color: #6b6b6b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .profile-nexus-container .current-photo-info i {
+        color: #b0a8a0;
+    }
+
+    .profile-nexus-container .photo-thumb {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #e0e0e0;
+    }
+
+    /* Submit button */
+    .profile-nexus-container .btn-material {
+        background: #1a1a1a;
+        border: none;
+        padding: 0.85rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+        color: white;
+        width: 100%;
+        transition: all 0.25s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 0.5rem;
+    }
+
+    .profile-nexus-container .btn-material i {
+        font-size: 1rem;
+        transition: transform 0.2s;
+    }
+
+    .profile-nexus-container .btn-material:hover {
+        background: #2c2c2c;
+        transform: scale(1.01);
+    }
+
+    .profile-nexus-container .btn-material:active {
+        transform: scale(0.98);
+    }
+
+    /* Back link */
+    .profile-nexus-container .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #8a8a8a;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 1.2rem;
+        transition: color 0.2s;
+    }
+
+    .profile-nexus-container .back-link:hover {
+        color: #1a1a1a;
+        text-decoration: none;
+    }
+
+    /* Alert */
+    .profile-nexus-container .alert-material {
+        border-radius: 60px;
+        border: none;
+        font-size: 0.8rem;
+        background: #f5f3f0;
+        color: #6b6b6b;
+        margin-bottom: 1.5rem;
+        display: none;
+        padding: 0.7rem 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+        .profile-nexus-container .form-body {
+            padding: 1.5rem;
+        }
+        .profile-nexus-container .card-header-minimal {
+            padding: 1.2rem;
+        }
+    }
+
+    /* Spinner animation */
+    .profile-nexus-container .fa-spinner {
+        animation: nexus-spin 1s linear infinite;
+    }
+    @keyframes nexus-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+</head>
+
+<body>
+<!-- Isolated wrapper to prevent style conflicts with parent template -->
+<div class="profile-nexus-container">
+    <div class="profile-card">
+        <!-- Header -->
+        <div class="card-header-minimal">
+            <div class="avatar-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h2>Edit Profile</h2>
+            <p>Update your personal information</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <!-- alert placeholder -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <form method="post" action="/myapp/editprofile_post/" enctype="multipart/form-data" id="profileForm">
+                {% csrf_token %}
+                <input type="hidden" value="{{ data.id }}" name="id">
+
+                <!-- Name -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" class="form-control-material" id="name" name="name" placeholder=" " value="{{ data.name }}" required>
+                    <span class="label-badge">Full Name</span>
+                </div>
+
+                <!-- Number -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-phone-alt"></i></span>
+                    <input type="tel" class="form-control-material" id="number" name="number" placeholder=" " value="{{ data.number }}" required>
+                    <span class="label-badge">Phone Number</span>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" class="form-control-material" id="email" name="email" placeholder=" " value="{{ data.email }}" required>
+                    <span class="label-badge">Email Address</span>
+                </div>
+
+                <!-- Place -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <input type="text" class="form-control-material" id="place" name="place" placeholder=" " value="{{ data.place }}" required>
+                    <span class="label-badge">Place / City</span>
+                </div>
+
+                <!-- Pin -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-location-dot"></i></span>
+                    <input type="text" class="form-control-material" id="pin" name="pin" placeholder=" " value="{{ data.pin }}" required>
+                    <span class="label-badge">Postal Code</span>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group-material">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control-material" id="password" name="password" placeholder=" " value="{{ data.password }}" required>
+                    <span class="label-badge">Password</span>
+                </div>
+
+                <!-- Current Photo Info -->
+                {% if data.photo %}
+                <div class="current-photo-info">
+                    <i class="fas fa-image"></i>
+                    <span>Current photo:</span>
+                    <img src="{{ data.photo }}" class="photo-thumb" alt="Profile">
+                    <span style="font-size: 0.7rem;">(Upload new to replace)</span>
+                </div>
+                {% endif %}
+
+                <!-- Photo Upload -->
+                <div class="photo-upload-wrapper">
+                    <label for="photoUpload" class="photo-label" id="photoLabel">
+                        <i class="fas fa-camera"></i>
+                        <span>Update Profile Photo</span>
+                        <span class="file-name" id="photoFileName">No file chosen</span>
+                    </label>
+                    <input type="file" id="photoUpload" class="photo-input" name="photo" accept="image/*">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Save Changes</span>
+                    <i class="fas fa-check-circle"></i>
+                </button>
+            </form>
+
+            <!-- back link -->
+            <div class="text-center">
+                <a href="/myapp/dashboard/" class="back-link" id="backToDashboard">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#aaa;">All fields are required</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Scope everything to our container
+        const container = document.querySelector('.profile-nexus-container');
+        if (!container) return;
+
+        // Helper selectors within container
+        const photoInput = container.querySelector('#photoUpload');
+        const photoFileNameSpan = container.querySelector('#photoFileName');
+
+        // ========== FILE UPLOAD HANDLER ==========
+        if (photoInput && photoFileNameSpan) {
+            photoInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const displayName = fileName.length > 30 ? fileName.substring(0, 27) + '...' : fileName;
+                    photoFileNameSpan.textContent = displayName;
+                    photoFileNameSpan.style.color = '#1a1a1a';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#1a1a1a';
+                } else {
+                    photoFileNameSpan.textContent = 'No file chosen';
+                    photoFileNameSpan.style.color = '#8a8a8a';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#e0e0e0';
+                }
+            });
+        }
+
+        // ========== SHOW ALERT ==========
+        const alertBox = container.querySelector('#liveAlert');
+        const alertMsgSpan = container.querySelector('#alertMsg');
+        const submitBtn = container.querySelector('#submitBtn');
+        const form = container.querySelector('#profileForm');
+
+        function showAlert(message, isSuccess = false) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                if (isSuccess) {
+                    alertBox.style.background = '#e8f5e9';
+                    alertBox.style.color = '#2e7d32';
+                } else {
+                    alertBox.style.background = '#fefaf5';
+                    alertBox.style.color = '#c26b2c';
+                }
+                setTimeout(() => {
+                    alertBox.style.display = 'none';
+                }, 4000);
+            } else {
+                alert(message);
+            }
+        }
+
+        // Validators
+        function validatePhone(phone) {
+            return /^[0-9]{10}$/.test(phone);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function validatePin(pin) {
+            return /^[0-9]{6}$/.test(pin);
+        }
+
+        // ========== FORM VALIDATION ==========
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const name = container.querySelector('#name')?.value.trim() || '';
+                const number = container.querySelector('#number')?.value.trim() || '';
+                const email = container.querySelector('#email')?.value.trim() || '';
+                const place = container.querySelector('#place')?.value.trim() || '';
+                const pin = container.querySelector('#pin')?.value.trim() || '';
+                const password = container.querySelector('#password')?.value.trim() || '';
+                const photoFile = photoInput ? photoInput.files[0] : null;
+
+                if (!name) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your full name.');
+                    container.querySelector('#name')?.focus();
+                    return false;
+                }
+                if (name.length < 2) {
+                    e.preventDefault();
+                    showAlert('❌ Name must be at least 2 characters.');
+                    container.querySelector('#name')?.focus();
+                    return false;
+                }
+
+                if (!number) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your phone number.');
+                    container.querySelector('#number')?.focus();
+                    return false;
+                }
+                if (!validatePhone(number)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Please enter a valid 10-digit phone number.');
+                    container.querySelector('#number')?.focus();
+                    return false;
+                }
+
+                if (!email) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your email address.');
+                    container.querySelector('#email')?.focus();
+                    return false;
+                }
+                if (!validateEmail(email)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Please enter a valid email address.');
+                    container.querySelector('#email')?.focus();
+                    return false;
+                }
+
+                if (!place) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your place/city.');
+                    container.querySelector('#place')?.focus();
+                    return false;
+                }
+
+                if (!pin) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your postal code.');
+                    container.querySelector('#pin')?.focus();
+                    return false;
+                }
+                if (!validatePin(pin)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Please enter a valid 6-digit PIN code.');
+                    container.querySelector('#pin')?.focus();
+                    return false;
+                }
+
+                if (!password) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter your password.');
+                    container.querySelector('#password')?.focus();
+                    return false;
+                }
+                if (password.length < 4) {
+                    e.preventDefault();
+                    showAlert('⚠️ Password must be at least 4 characters.');
+                    container.querySelector('#password')?.focus();
+                    return false;
+                }
+
+                if (photoFile) {
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
+                    if (!allowedTypes.includes(photoFile.type)) {
+                        e.preventDefault();
+                        showAlert('📸 Please upload a valid image file (JPEG, PNG, WEBP, GIF).');
+                        return false;
+                    }
+                    if (photoFile.size > 5 * 1024 * 1024) {
+                        e.preventDefault();
+                        showAlert('📁 Image size must be less than 5MB.');
+                        return false;
+                    }
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Saving...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== FLOATING LABEL BEHAVIOR ==========
+        const inputs = container.querySelectorAll('.form-control-material');
+        inputs.forEach(input => {
+            function updateLabelState() {
+                const parentDiv = input.closest('.input-group-material');
+                if (!parentDiv) return;
+                const badge = parentDiv.querySelector('.label-badge');
+                const iconSpan = parentDiv.querySelector('.input-icon');
+                const hasValue = input.value.trim().length > 0;
+                const isFocused = document.activeElement === input;
+
+                if (badge) {
+                    if (isFocused || hasValue) {
+                        badge.style.color = '#1a1a1a';
+                        badge.style.fontWeight = '700';
+                    } else {
+                        badge.style.color = '#8a8a8a';
+                        badge.style.fontWeight = '600';
+                    }
+                }
+                if (iconSpan) {
+                    if (isFocused) iconSpan.style.color = '#1a1a1a';
+                    else iconSpan.style.color = '#b0a8a0';
+                }
+            }
+
+            updateLabelState();
+            input.addEventListener('focus', updateLabelState);
+            input.addEventListener('blur', updateLabelState);
+            input.addEventListener('input', updateLabelState);
+        });
+
+        // ========== BACK LINK ==========
+        const backLink = container.querySelector('#backToDashboard');
+        if (backLink) {
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAlert('↩️ Returning to dashboard...', true);
+                setTimeout(() => {
+                    // window.location.href = '/myapp/dashboard/';
+                    console.log('Navigate to dashboard');
+                }, 600);
+            });
+        }
+
+        // ========== CHECK URL PARAMETERS ==========
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === '1') {
+            showAlert('✅ Profile updated successfully!', true);
+        } else if (urlParams.get('error')) {
+            showAlert('❌ ' + urlParams.get('error'), false);
+        }
+
+        // ========== AUTO FILL DETECTION ==========
+        setTimeout(() => {
+            container.querySelectorAll('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.trim().length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#1a1a1a';
+                    }
+                }
+            });
+        }, 200);
+    })();
+</script>
+</body>
+</html>
+{% endblock %}

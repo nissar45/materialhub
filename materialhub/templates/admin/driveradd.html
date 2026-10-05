@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+  <div class="container">
+    <h2 class="mb-4">Driver Details</h2>
+    <form method="post" action="/myapp/add_driver_post/" enctype="multipart/form-data">
+        {% csrf_token %}
+
+         <div class="row mb-3">
+        <label for="name" class="col-sm-4 ">name</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" name="name" required>
+        </div>
+      </div>
+
+        <div class="row mb-3">
+        <label for="photo" class="col-sm-4 ">Upload Photo</label>
+        <div class="col-sm-8">
+          <input type="file" class="form-control" name="photo" accept="image/*" required>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="name" class="col-sm-4 ">Proof</label>
+        <div class="col-sm-8">
+          <input type="file" class="form-control" name="proof" required>
+        </div>
+      </div>
+        <div class="row mb-3">
+        <label for="name" class="col-sm-4 ">Place</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" name="place" required>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="email" class="col-sm-4 ">Email address</label>
+        <div class="col-sm-8">
+          <input type="email" class="form-control" name="email" required>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="phone" class="col-sm-4 ">Phone Number</label>
+        <div class="col-sm-8">
+          <input type="tel" pattern="[0-9]{10}" class="form-control" name="number" required>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="place" class="col-sm-4 ">Pin</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" name="pin" required>
+        </div>
+      </div>
+
+
+      <div class="row mb-3">
+        <label for="post" class="col-sm-4 ">post</label>
+        <div class="col-sm-8">
+          <input type="text"  class="form-control" name="post" required>
+        </div>
+      </div>
+
+
+
+      <div class="row mb-3">
+        <div class="offset-sm-4 col-sm-8">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+{% extends 'admin/adminhome.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Material Hub | Add New Driver</title>
+    <!-- Google Fonts + Material Icons + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Bootstrap 5 CSS (lightweight, but we'll scope styles) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ----- ISOLATED STYLES: all rules prefixed with .add-driver-container to avoid conflicts with parent adminhome.css ----- */
+        .add-driver-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .add-driver-container {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            min-height: auto;
+            padding: 1rem;
+            position: relative;
+            width: 100%;
+        }
+
+        /* main card */
+        .add-driver-container .material-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+            width: 100%;
+            max-width: 780px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .add-driver-container .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* header */
+        .add-driver-container .hub-header {
+            background: #1e2b3c;
+            padding: 1.6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .add-driver-container .hub-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb347, #ff8c00, #f39c12);
+            border-radius: 3px;
+        }
+
+        .add-driver-container .logo-icon {
+            font-size: 2.4rem;
+            color: #ffb347;
+            background: rgba(255,255,255,0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .add-driver-container .logo-icon i {
+            font-size: 2rem;
+        }
+
+        .add-driver-container .hub-header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: white;
+            margin: 0;
+        }
+
+        .add-driver-container .hub-header p {
+            color: #cbdbe6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* form body */
+        .add-driver-container .form-body {
+            padding: 2rem 2rem 2rem;
+        }
+
+        /* two column layout */
+        .add-driver-container .form-row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.2rem;
+        }
+
+        /* form groups */
+        .add-driver-container .input-group-material {
+            margin-bottom: 1.6rem;
+            position: relative;
+        }
+
+        .add-driver-container .input-group-material .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e9aaf;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .add-driver-container .form-control-material {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .add-driver-container .form-control-material:focus {
+            outline: none;
+            border-color: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.15);
+            background-color: #ffffff;
+        }
+
+        .add-driver-container .form-control-material::placeholder {
+            color: #a0b3c9;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        /* floating label */
+        .add-driver-container .label-badge {
+            position: absolute;
+            left: 2.8rem;
+            top: -0.6rem;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ff8c42;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* file upload */
+        .add-driver-container .file-upload-wrapper {
+            margin-bottom: 1.6rem;
+            position: relative;
+        }
+
+        .add-driver-container .file-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafd;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 1.2rem;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .add-driver-container .file-label:hover {
+            border-color: #ff8c42;
+            background: #fffaf5;
+        }
+
+        .add-driver-container .file-label i {
+            font-size: 1.3rem;
+            color: #ff8c42;
+        }
+
+        .add-driver-container .file-label span {
+            font-size: 0.85rem;
+        }
+
+        .add-driver-container .file-input-hidden {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .add-driver-container .file-name {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #eef2ff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+        }
+
+        /* submit button */
+        .add-driver-container .btn-material {
+            background: linear-gradient(95deg, #1e2b3c 0%, #2c3e4e 100%);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            box-shadow: 0 8px 14px -6px rgba(30, 43, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-driver-container .btn-material i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .add-driver-container .btn-material:hover {
+            background: linear-gradient(95deg, #243b4e 0%, #1f2f3c 100%);
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.35);
+        }
+
+        .add-driver-container .btn-material:active {
+            transform: scale(0.98);
+        }
+
+        /* back link */
+        .add-driver-container .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #5a6e8a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .add-driver-container .back-link:hover {
+            color: #ff8c42;
+            text-decoration: none;
+        }
+
+        /* alert */
+        .add-driver-container .alert-material {
+            border-radius: 1rem;
+            border: none;
+            font-size: 0.85rem;
+            background: #fff4e8;
+            color: #c26b2c;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1.5rem;
+            display: none;
+            padding: 0.75rem 1rem;
+        }
+
+        /* ripple animation */
+        @keyframes driver-ripple-animation {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        .add-driver-container .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255,255,240,0.5);
+            transform: scale(0);
+            animation: driver-ripple-animation 0.5s linear forwards;
+            pointer-events: none;
+        }
+
+        /* responsive */
+        @media (max-width: 700px) {
+            .add-driver-container .form-row-2col {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .add-driver-container .form-body {
+                padding: 1.5rem;
+            }
+            .add-driver-container .hub-header {
+                padding: 1.2rem;
+            }
+            .add-driver-container .logo-icon {
+                width: 52px;
+                height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Isolated wrapper: all styles are scoped under .add-driver-container -->
+<div class="add-driver-container">
+    <div class="material-card">
+        <!-- Header -->
+        <div class="hub-header">
+            <div class="logo-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1>Add New Driver</h1>
+            <p>Register driver for material delivery • Material Hub</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+            <!-- alert placeholder -->
+            <div id="liveAlert" class="alert-material" role="alert">
+                <i class="fas fa-info-circle me-1"></i> <span id="alertMsg"></span>
+            </div>
+
+            <form method="post" action="/myapp/add_driver_post/" enctype="multipart/form-data" id="driverForm">
+                {% csrf_token %}
+
+                <!-- Two column layout -->
+                <div class="form-row-2col">
+                    <!-- Full Name -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">person</i></span>
+                        <input type="text" class="form-control-material" id="driverName" name="name" placeholder=" " required autocomplete="off">
+                        <span class="label-badge">Full Name</span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">email</i></span>
+                        <input type="email" class="form-control-material" id="driverEmail" name="email" placeholder=" " required autocomplete="email">
+                        <span class="label-badge">Email Address</span>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">phone</i></span>
+                        <input type="tel" class="form-control-material" id="driverPhone" name="number" placeholder=" " pattern="[0-9]{10}" required autocomplete="tel">
+                        <span class="label-badge">Phone Number</span>
+                    </div>
+
+                    <!-- Place -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">location_on</i></span>
+                        <input type="text" class="form-control-material" id="driverPlace" name="place" placeholder=" " required autocomplete="off">
+                        <span class="label-badge">Place / City</span>
+                    </div>
+
+                    <!-- Post -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">local_post_office</i></span>
+                        <input type="text" class="form-control-material" id="driverPost" name="post" placeholder=" " required autocomplete="off">
+                        <span class="label-badge">Post Office</span>
+                    </div>
+
+                    <!-- PIN Code -->
+                    <div class="input-group-material">
+                        <span class="input-icon"><i class="material-icons-round">pin</i></span>
+                        <input type="text" class="form-control-material" id="driverPin" name="pin" placeholder=" " required autocomplete="off" pattern="[0-9]{6}" maxlength="6">
+                        <span class="label-badge">PIN Code</span>
+                    </div>
+                </div>
+
+                <!-- Photo Upload -->
+                <div class="file-upload-wrapper">
+                    <label for="photoUpload" class="file-label" id="photoLabel">
+                        <i class="fas fa-camera"></i>
+                        <span>Driver Photo</span>
+                        <span class="file-name" id="photoFileName">No file chosen</span>
+                    </label>
+                    <input type="file" id="photoUpload" class="file-input-hidden" name="photo" accept="image/*" required>
+                </div>
+
+                <!-- Proof Document Upload -->
+                <div class="file-upload-wrapper">
+                    <label for="proofUpload" class="file-label" id="proofLabel">
+                        <i class="fas fa-id-card"></i>
+                        <span>Identity Proof (Aadhar / License)</span>
+                        <span class="file-name" id="proofFileName">No file chosen</span>
+                    </label>
+                    <input type="file" id="proofUpload" class="file-input-hidden" name="proof" accept="image/*,application/pdf" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-material" id="submitBtn">
+                    <span>Register Driver</span>
+                    <i class="fas fa-check-circle"></i>
+                </button>
+            </form>
+
+            <!-- back link -->
+            <div class="text-center">
+                <a href="/myapp/view_driver_get/" class="back-link" id="backToDrivers">
+                    <i class="fas fa-arrow-left"></i> Back to Driver List
+                </a>
+            </div>
+            <p class="text-center mt-3 mb-0" style="font-size: 0.7rem; color:#6c7a91;">All fields are required. Ensure valid contact details.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: isolated logic using container scoping -->
+<script>
+    (function() {
+        // Scope everything to our container
+        const container = document.querySelector('.add-driver-container');
+        if (!container) return;
+
+        // Helper selectors within container
+        const photoInput = container.querySelector('#photoUpload');
+        const photoFileNameSpan = container.querySelector('#photoFileName');
+        const proofInput = container.querySelector('#proofUpload');
+        const proofFileNameSpan = container.querySelector('#proofFileName');
+        const form = container.querySelector('#driverForm');
+        const alertBox = container.querySelector('#liveAlert');
+        const alertMsgSpan = container.querySelector('#alertMsg');
+        const submitBtn = container.querySelector('#submitBtn');
+        const backLink = container.querySelector('#backToDrivers');
+
+        // ========== FILE UPLOAD HANDLERS ==========
+        if (photoInput && photoFileNameSpan) {
+            photoInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const displayName = fileName.length > 30 ? fileName.substring(0, 27) + '...' : fileName;
+                    photoFileNameSpan.textContent = displayName;
+                    photoFileNameSpan.style.color = '#ff8c42';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#ff8c42';
+                } else {
+                    photoFileNameSpan.textContent = 'No file chosen';
+                    photoFileNameSpan.style.color = '#64748b';
+                    const label = container.querySelector('#photoLabel');
+                    if (label) label.style.borderColor = '#cbd5e1';
+                }
+            });
+        }
+
+        if (proofInput && proofFileNameSpan) {
+            proofInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    const displayName = fileName.length > 30 ? fileName.substring(0, 27) + '...' : fileName;
+                    proofFileNameSpan.textContent = displayName;
+                    proofFileNameSpan.style.color = '#ff8c42';
+                    const label = container.querySelector('#proofLabel');
+                    if (label) label.style.borderColor = '#ff8c42';
+                } else {
+                    proofFileNameSpan.textContent = 'No file chosen';
+                    proofFileNameSpan.style.color = '#64748b';
+                    const label = container.querySelector('#proofLabel');
+                    if (label) label.style.borderColor = '#cbd5e1';
+                }
+            });
+        }
+
+        // ========== HELPER FUNCTIONS ==========
+        function showAlert(message, isError = true) {
+            if (alertBox && alertMsgSpan) {
+                alertMsgSpan.innerText = message;
+                alertBox.style.display = 'block';
+                setTimeout(() => {
+                    if (alertBox) alertBox.style.display = 'none';
+                }, 5000);
+            } else {
+                alert(message);
+            }
+        }
+
+        function validatePhone(phone) {
+            return /^[0-9]{10}$/.test(phone);
+        }
+
+        function validatePin(pin) {
+            return /^[0-9]{6}$/.test(pin);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+        }
+
+        // ========== FORM VALIDATION ==========
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const name = container.querySelector('#driverName')?.value.trim() || '';
+                const email = container.querySelector('#driverEmail')?.value.trim() || '';
+                const phone = container.querySelector('#driverPhone')?.value.trim() || '';
+                const place = container.querySelector('#driverPlace')?.value.trim() || '';
+                const post = container.querySelector('#driverPost')?.value.trim() || '';
+                const pin = container.querySelector('#driverPin')?.value.trim() || '';
+                const photoFile = photoInput ? photoInput.files[0] : null;
+                const proofFile = proofInput ? proofInput.files[0] : null;
+
+                if (!name) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter driver full name.');
+                    container.querySelector('#driverName')?.focus();
+                    return false;
+                }
+                if (name.length < 2) {
+                    e.preventDefault();
+                    showAlert('❌ Name must be at least 2 characters.');
+                    container.querySelector('#driverName')?.focus();
+                    return false;
+                }
+
+                if (!email) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter email address.');
+                    container.querySelector('#driverEmail')?.focus();
+                    return false;
+                }
+                if (!validateEmail(email)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Please enter a valid email address (e.g., driver@example.com).');
+                    container.querySelector('#driverEmail')?.focus();
+                    return false;
+                }
+
+                if (!phone) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter phone number.');
+                    container.querySelector('#driverPhone')?.focus();
+                    return false;
+                }
+                if (!validatePhone(phone)) {
+                    e.preventDefault();
+                    showAlert('⚠️ Phone number must be exactly 10 digits (0-9).');
+                    container.querySelector('#driverPhone')?.focus();
+                    return false;
+                }
+
+                if (!place) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter place/city.');
+                    container.querySelector('#driverPlace')?.focus();
+                    return false;
+                }
+
+                if (!post) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter post office.');
+                    container.querySelector('#driverPost')?.focus();
+                    return false;
+                }
+
+                if (!pin) {
+                    e.preventDefault();
+                    showAlert('❌ Please enter PIN code.');
+                    container.querySelector('#driverPin')?.focus();
+                    return false;
+                }
+                if (!validatePin(pin)) {
+                    e.preventDefault();
+                    showAlert('⚠️ PIN code must be exactly 6 digits.');
+                    container.querySelector('#driverPin')?.focus();
+                    return false;
+                }
+
+                if (!photoFile) {
+                    e.preventDefault();
+                    showAlert('📸 Please upload driver photo.');
+                    return false;
+                }
+                const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                if (!allowedImageTypes.includes(photoFile.type)) {
+                    e.preventDefault();
+                    showAlert('📸 Photo must be an image file (JPEG, PNG, WEBP).');
+                    return false;
+                }
+                if (photoFile.size > 3 * 1024 * 1024) {
+                    e.preventDefault();
+                    showAlert('📸 Photo size must be less than 3MB.');
+                    return false;
+                }
+
+                if (!proofFile) {
+                    e.preventDefault();
+                    showAlert('🪪 Please upload identity proof (Aadhar/License).');
+                    return false;
+                }
+                const allowedProofTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf'];
+                if (!allowedProofTypes.includes(proofFile.type)) {
+                    e.preventDefault();
+                    showAlert('📄 Proof must be an image or PDF file.');
+                    return false;
+                }
+                if (proofFile.size > 5 * 1024 * 1024) {
+                    e.preventDefault();
+                    showAlert('📄 Proof file size must be less than 5MB.');
+                    return false;
+                }
+
+                // Show loading state
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span>Registering Driver...</span> <i class="fas fa-spinner fa-pulse"></i>';
+                    submitBtn.disabled = true;
+                }
+                return true;
+            });
+        }
+
+        // ========== FLOATING LABEL BEHAVIOR ==========
+        const inputs = container.querySelectorAll('.form-control-material');
+        inputs.forEach(input => {
+            function updateLabelState() {
+                const parentDiv = input.closest('.input-group-material');
+                if (!parentDiv) return;
+                const badge = parentDiv.querySelector('.label-badge');
+                const iconSpan = parentDiv.querySelector('.input-icon');
+                const hasValue = input.value.trim().length > 0;
+                const isFocused = document.activeElement === input;
+
+                if (badge) {
+                    if (isFocused || hasValue) {
+                        badge.style.color = '#ff8c42';
+                        badge.style.fontWeight = '700';
+                    } else {
+                        badge.style.color = '#8e9aaf';
+                        badge.style.fontWeight = '600';
+                    }
+                }
+                if (iconSpan) {
+                    if (isFocused) iconSpan.style.color = '#ff8c42';
+                    else iconSpan.style.color = '#8e9aaf';
+                }
+            }
+
+            updateLabelState();
+            input.addEventListener('focus', updateLabelState);
+            input.addEventListener('blur', updateLabelState);
+            input.addEventListener('input', updateLabelState);
+        });
+
+        // ========== RIPPLE EFFECT ==========
+        const materialBtns = container.querySelectorAll('.btn-material');
+        materialBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (submitBtn && submitBtn.disabled) return;
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple-effect');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size/2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size/2 + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.4s ease-out';
+                ripple.style.pointerEvents = 'none';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.style.transform = 'scale(4)'; ripple.style.opacity = '0'; }, 10);
+                setTimeout(() => { if (ripple && ripple.remove) ripple.remove(); }, 400);
+            });
+        });
+
+        // ========== BACK LINK ==========
+        if (backLink) {
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showAlert('↩️ Returning to driver list...', false);
+                setTimeout(() => {
+                    // window.location.href = '/myapp/view_driver_get/';
+                    console.log('Navigate to driver list');
+                }, 600);
+            });
+        }
+
+        // ========== AUTO-FILL DETECTION ==========
+        setTimeout(() => {
+            container.querySelectorAll('.form-control-material').forEach(inp => {
+                if (inp.value && inp.value.length > 0) {
+                    const parentDiv = inp.closest('.input-group-material');
+                    if (parentDiv) {
+                        const badge = parentDiv.querySelector('.label-badge');
+                        if (badge) badge.style.color = '#ff8c42';
+                    }
+                }
+            });
+        }, 200);
+    })();
+</script>
+</body>
+</html>
+{% endblock %}
